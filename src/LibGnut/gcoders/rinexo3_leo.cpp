@@ -89,7 +89,7 @@ namespace gnut {
 				} // loop over # observations
 			}
 
-			if (_log && _log->verb() >= 2) {
+			if (_spdlog ) {
 				ostringstream lg; lg << "SYS / OBS TYPES: [" + sys + "] ";
 
 				t_rnxhdr::t_vobstypes::const_iterator it;
@@ -149,7 +149,7 @@ namespace gnut {
 					} // loop over # observations
 				}
 
-				if (_log && _log->verb() >= 2) {
+				if (_spdlog ) {
 					ostringstream lg;
 					lg << "SYS / SCALE FACTOR: [" << sys << "] ";
 
@@ -217,7 +217,7 @@ namespace gnut {
 				}
 
 				// comments
-				if (_log && _log->verb() >= 2) {
+				if (_spdlog) {
 					ostringstream lg; lg << "SYS / PHASE SHIFT: [" + sys + "] ";
 					t_rnxhdr::t_obstypes::const_iterator it;
 					t_rnxhdr::t_vobstypes::const_iterator itOBS;
@@ -288,7 +288,7 @@ namespace gnut {
 				// ------------------------------------------------------------------
 
 				// comments
-				if (_log && _log->verb() >= 2) {
+				if (_spdlog ) {
 					ostringstream lg; lg << "GLO SLOT/FRQ:";
 					t_rnxhdr::t_obstypes::const_iterator it;
 					t_rnxhdr::t_vobstypes::const_iterator itOBS;
@@ -325,7 +325,7 @@ namespace gnut {
 			}
 
 			// comments
-			if (_log && _log->verb() >= 2) {
+			if (_spdlog ) {
 				ostringstream lg; lg << "GLO COD/PHA BIAS:";
 				t_rnxhdr::t_vobstypes::const_iterator itOBS;
 				for (itOBS = _globia.begin(); itOBS != _globia.end(); ++itOBS) {
@@ -424,7 +424,6 @@ namespace gnut {
 
 		if (_complete) {
 
-			if (_log && _log->verb() >= 5) _log->comment(5, "rinexo3", _epoch.str_ymdhms("reading finished at "));
 			_count += this->_fill_data();
 			t_gcoder::_consume(_tmpsize);
 			_consume += _tmpsize;
@@ -591,7 +590,8 @@ namespace gnut {
 			if (go[1] == '1') {
 				go[1] = '2'; // change B1 -> B2 !!!
 				if (_version != "3.02") {
-					if (_log) _log->comment(0, "rinexo3", "Warning: BDS band changed: B1->B2");
+					if (_spdlog) 
+						SPDLOG_LOGGER_INFO(_spdlog, "rinexo3", "Warning: BDS band changed: B1->B2");
 					else               cerr << "rinexo3 - Warning: BDS band changed: B1->B2\n";
 					mesg(GWARNING, "Warning: BDS band changed: B1->B2 for RINEX " + _version);
 				}
@@ -599,7 +599,7 @@ namespace gnut {
 			if (go[1] == '3') {
 				go[1] = '6'; // for B3 (change C3I -> C6I or so on !!!)
 				if (_version != "3.02") {
-					if (_log) _log->comment(0, "rinexo3", "Warning: BDS band changed: 3->6 ");
+					if (_spdlog) SPDLOG_LOGGER_INFO(_spdlog, "rinexo3", "Warning: BDS band changed: 3->6");
 					else               cerr << "rinexo3 - Warning: BDS band changed: 3->6\n";
 					mesg(GWARNING, "Warning: BDS band changed: B1->B2 for RINEX " + _version);
 				}

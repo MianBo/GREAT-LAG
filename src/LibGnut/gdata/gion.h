@@ -24,22 +24,38 @@ History
 
 namespace gnut
 {
+	/**
+	*@brief	 Class for record ion record
+	*/
 	class LibGnut_LIBRARY_EXPORT t_gion_record
 	{
 	public:
+		/** @brief constructor. */
 		t_gion_record();
+
+		/**
+		* @brief push trp data for one site into the alltrp data map.
+		* @param [in]  type   SION or VION.
+		* @param [in]  rec    receiver.
+		* @param [in]  sat    sat.
+		* @param [in]  value  ion value.
+		* @param [in]  beg    beg.
+		* @param [in]  end    end.
+		*/
 		t_gion_record(const string& type, const string& rec, const string& sat,
 			const double& value, const double& sigma,
 			const t_gtime& beg, const t_gtime& end);
+
+		/** @brief default destructor. */
 		virtual ~t_gion_record();
 
 		string ion_type; // SION or VION
-		double value;
-		double sigma;
-		string sat;
-		string rec;
-		t_gtime beg;
-		t_gtime end;
+		double value;    // ion vale
+		double sigma;    // ion sigma
+		string sat;      //sat
+		string rec;      // receiver
+		t_gtime beg;     //begin
+		t_gtime end;     // end
 	};
 
 	/**

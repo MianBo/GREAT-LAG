@@ -68,7 +68,7 @@ namespace gnut
         /** @brief add satellite velocity. */
         void addvel(const t_gtriple &vel);
 
-        /** @brief add by glfeng. */
+        /** @brief add vel_crs. */
         void addvel_crs(const t_gtriple &vel);
 
         /** @brief add satellite clocks at the transmision time. */

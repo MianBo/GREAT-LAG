@@ -236,7 +236,6 @@ namespace gnut
 
         if (observ - unknwn < 0)
         {
-            cout << " Observ < Unknwn !! : " << observ << " < " << unknwn << endl;
             reset();
             return -1;
         }
@@ -289,7 +288,6 @@ namespace gnut
         const int maxorder = 30;
         if (X.size() != Y.size())
         {
-            cout << "wrong" << endl;
             throw "interpolate Wrong!!number wrong";
         }
         int Num = X.size();

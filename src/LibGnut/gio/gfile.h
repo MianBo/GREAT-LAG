@@ -43,7 +43,6 @@ namespace gnut
     public:
         /** @brief default constructor. */
         t_gfile(t_spdlog spdlog);
-        t_gfile(t_glog glog);
 
         /** @brief default destructor. */
         virtual ~t_gfile();

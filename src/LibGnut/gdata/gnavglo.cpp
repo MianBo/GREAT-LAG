@@ -213,7 +213,6 @@ namespace gnut
 
         int nsteps = (int)fabs(floor(Tk / _min_step + 0.5)); // step number for RungeKutta
         double step = fabs(Tk) / nsteps;                     // step length for RungeKutta, length is cca 10s
-                                                             //  cout << Tk << " " << nsteps << " " << step << endl;
         if (Tk < 0)
             step = -step;
         ColumnVector yy_integr(6);

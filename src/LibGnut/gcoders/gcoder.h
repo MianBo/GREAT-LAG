@@ -39,7 +39,6 @@
 #include "gset/gsetgnss.h"
 #include "gset/gsetgen.h"
 #include "gcoders/gcoder_buffer.h"
-#include "gio/glog.h"
 #include "spdlog/spdlog.h"
 
 #define BUFFER_INCREASE_FAC 1.5
@@ -279,7 +278,6 @@ namespace gnut
         int _irc;                     ///< IRC code
         bool _close_with_warning;     ///< close with warnings (desctructor)
 
-        t_glog* _log;                 // log pointer
         gcoder_char_buffer _decode_buffer;
 
         //    settings

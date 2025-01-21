@@ -37,7 +37,7 @@ using namespace std;
 
 namespace gnut
 {
-
+    /** @brief class for setting of receiver in XML file */
     class LibGnut_LIBRARY_EXPORT t_gsetrec : public virtual t_gsetbase
     {
     public:

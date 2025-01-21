@@ -124,7 +124,7 @@ namespace gnut
                         double xyz[3] = NULL,
                         double var[3] = NULL,
                         double vel[3] = NULL,
-                        const bool &chk_mask = true); ///< [m] add by glfeng
+                        const bool &chk_mask = true); ///< [m] 
 
         /**
         * @brief return clock corrections.

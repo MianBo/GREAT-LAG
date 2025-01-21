@@ -166,9 +166,6 @@ namespace gnut
         }
         if (it2 == data.begin() || it2 == data.end())
         {
-#ifdef DEBUG
-            cerr << "# warning: extrapolation is not allowed " << it2->first << " " << val << "!\n";
-#endif
             return -1;
         }
 
@@ -186,10 +183,6 @@ namespace gnut
 
         fval = coef(1, 1) * val + coef(2, 1);
 
-#ifdef DEBUG
-        cerr << "t_ginterp::linear: "
-             << "x = " << val << " fx = " << fval << endl;
-#endif
         return 0;
     }
 
@@ -219,14 +212,6 @@ namespace gnut
                 X.push_back(II->first);
                 Y.push_back(II->second);
             }
-
-#ifdef DEBUG
-            for (II = data.begin(); II != data.end(); ++II)
-                cout << II->first << "  :  " << II->second << endl;
-
-            cout << "Interpolated value " << val << endl;
-#endif
-
             double e = val;
 
             vector<double> h, lambda, eta, B, C, D, g, CoefA, CoefB, CoefC, CoefD, AA, BB, FI;
@@ -355,7 +340,6 @@ namespace gnut
                 double gt = (dt.mjd() - epo.mjd()) * 86400 + dt.sod() - epo.sod() + dt.dsec() - epo.dsec(); // all in sec
 
                 tmp[gt] = itDAT->second;
-                //      cout << " seconds = " << itDAT->first.str_ymdhms() << " " << gt << endl;
             }
 
             int irc = linear(tmp, 0.0, fval);
@@ -386,14 +370,6 @@ namespace gnut
         for (; itDAT != data.end(); ++itDAT)
         {
             v_pt.push_back(itDAT->first);
-#ifdef DEBUG
-            cout << "# interp:" << fixed << setprecision(0)
-                 << " " << itDAT->first[0]
-                 << ":" << itDAT->first[1]
-                 << " " << setprecision(3)
-                 << " " << data.at(v_pt.at(v_pt.size() - 1))
-                 << endl;
-#endif
         }
 
         // no interpolation (1 point)
@@ -424,7 +400,6 @@ namespace gnut
 
             if (a - b == 0)
             {
-                cout << "# warning: Bilinear interpolation failed (2 points) \n";
                 fval = 0.0;
                 return -1;
             }
@@ -437,22 +412,6 @@ namespace gnut
         }
         else if (v_pt.size() == 4)
         {
-
-#ifdef DEBUG
-            cout << "# Linear interpolation (4): " << fixed << setprecision(0)
-                 << "  " << v_pt[0][0] << ":" << v_pt[0][1]
-                 << "  " << v_pt[1][0] << ":" << v_pt[1][1]
-                 << "  " << v_pt[2][0] << ":" << v_pt[2][1]
-                 << "  " << v_pt[3][0] << ":" << v_pt[3][1]
-                 << " ." << setprecision(3)
-                 << "  " << req_pos[0] << "-" << req_pos[1]
-                 << "  " << data.at(v_pt[0])
-                 << "  " << data.at(v_pt[1])
-                 << "  " << data.at(v_pt[2])
-                 << "  " << data.at(v_pt[3])
-                 << endl;
-#endif
-
             double a = data.at(v_pt[0]) * (v_pt[3][0] - req_pos[0]) * (v_pt[3][1] - req_pos[1]);
             double b = data.at(v_pt[1]) * (req_pos[0] - v_pt[2][0]) * (v_pt[2][1] - req_pos[1]);
             double c = data.at(v_pt[2]) * (v_pt[1][0] - req_pos[0]) * (req_pos[1] - v_pt[1][1]);
@@ -460,7 +419,6 @@ namespace gnut
 
             if ((v_pt[2][0] - v_pt[1][0]) * (v_pt[1][1] - v_pt[0][1]) == 0)
             {
-                //       cout << "# warning: Bilinear interpolation failed (4 points)\n";
                 fval = 0.0;
                 return -1;
             }
@@ -472,7 +430,6 @@ namespace gnut
         else
         {
             fval = 0.0;
-            //     cout << "# warning: Bilinear interpolation failed (X points ?)\n";
             return -1;
         }
 

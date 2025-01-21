@@ -102,7 +102,7 @@ namespace gnut
                 }
                 else
                 {
-                    // glfeng add for GAL to store Q & X DCB bias
+                    // add for GAL to store Q & X DCB bias
                     shared_ptr<t_gbias> pt_ref = make_shared<t_gbias>(_spdlog);               // create first reference bias
                     pt_ref->set(pt_cb->beg(), pt_cb->end(), 0.0, pt_cb->ref(), pt_cb->ref()); // reference bias is set up to zero
                     _mapBias[ac][epo][obj][pt_ref->gobs()] = pt_ref;                          // store new bias (reference)

@@ -108,8 +108,6 @@ namespace gnut
 
         of.close();
 
-        cout << "XML-config saved: " + name << endl;
-
         _gmutex.unlock();
         return 0;
     }

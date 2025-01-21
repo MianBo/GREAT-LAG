@@ -27,6 +27,7 @@
 #include "gutils/gmutex.h"
 #include "pugixml/src/pugixml.hpp"
 #include "spdlog/spdlog.h"
+#include "gio/grtlog.h"
 
 #define XMLKEY_ROOT "config" ///< The define of ROOT node
 
@@ -225,6 +226,7 @@ namespace gnut
         string _dat; ///< program data
         string _tim; ///< program time
 
+        t_spdlog _spdlog;         ///< spdlog pointer
         set<string> _set;                     ///< program settings
         map<string, set<string>> _chache_log; ///< The chache of log pointer
 

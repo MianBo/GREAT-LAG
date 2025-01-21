@@ -195,8 +195,6 @@ namespace gnut
 
     void t_gallobj::read_satinfo(t_gtime &epo)
     {
-
-        cout << _mapobj["G01"]->name();
         t_map_obj::iterator it;
         for (it = _mapobj.begin(); it != _mapobj.end(); ++it)
         {

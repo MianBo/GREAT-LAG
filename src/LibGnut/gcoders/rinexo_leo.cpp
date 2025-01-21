@@ -127,9 +127,9 @@ namespace gnut {
 							// write RINEX VERSION / TYPE
 							const string rnxver = rnxHdr.rnxver();
 							if (rnxver != string("3.03")) {
-								if (_log) _log->comment(0, "rinexo", "Warning: not RINEX observation file version 3.03");
+								if (_spdlog) 
+									SPDLOG_LOGGER_INFO(_spdlog, "rinexo", "Warning: not RINEX observation file version 3.03");
 								else                cerr << "rinexo - Warning: not RINEX observation file version 3.03\n";
-								//                                               _seterr("Warning: not RINEX observation file version!");
 								_mutex.unlock();
 								return -1;
 							}
@@ -648,7 +648,9 @@ namespace gnut {
 			// -------- "RINEX VERSION" --------
 			if (_line.find("RINEX VERSION", 60) != string::npos) {          // first line
 				if (_line[20] != 'O') {      // A1
-					if (_log) { _log->comment(0, "rinexo", "Error: not RINEX observation file"); }
+					if (_spdlog) { 
+						SPDLOG_LOGGER_INFO(_spdlog, "rinexo", "Error: not RINEX observation file");
+					}
 					else { cerr << "rinexo - Error: not RINEX observation file\n"; }
 					mesg(GERROR, "Error: not RINEX observation file!");  ++_irc;
 					return (_consume = -1);
@@ -659,12 +661,13 @@ namespace gnut {
 				_rnxhdr.rnxver(_version);
 				_rnxhdr.rnxsys(toupper(_line[40]));     // A1 (G=GPS, R=GLO, E=GAL, S=SBAS, M=Mix)
 
-				if (_log && substitute(_version, " ", "") > 0) {
+				if (_spdlog && substitute(_version, " ", "") > 0) {
 					SPDLOG_LOGGER_INFO(_spdlog,  "rinexo", "reading VER: " + _version + " SYS: " + string(1, _rnxhdr.rnxsys()));
 				}
 
 				if (_rnxhdr.rnxsys() == ' ') {
-					if (_log)  _log->comment(0, "rinexo", "Warning: RINEX SYS not defined, GPS set as default");
+					if (_spdlog)  
+						SPDLOG_LOGGER_INFO(_spdlog, "rinexo", "Warning: RINEX SYS not defined, GPS set as default");
 					if (_version < "3.00") { mesg(GWARNING, "Warning: RINEX SYS not defined!"); }
 					else { mesg(GERROR, "Error: RINEX SYS not defined!");  ++_irc; }
 					_rnxhdr.rnxsys('G');

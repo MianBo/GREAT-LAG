@@ -22,10 +22,16 @@ using namespace gnut;
 
 namespace gnut
 {
+	/**
+	*@brief Class for t_gionex_head
+	*/
 	class LibGnut_LIBRARY_EXPORT t_gionex_head
 	{
 	public:
+		/** @brief constructor. */
 		t_gionex_head();
+
+		/** @brief default destructor. */
 		virtual ~t_gionex_head();
 	
 		/** @brief assignment operator . */
@@ -51,11 +57,16 @@ namespace gnut
 		map<string, pair<double, double> >  p1p2_dcb;         // sat  bias[ns]  rms
 	};
 
-
+	/**
+	*@brief Class for t_gionex_data
+	*/
 	class LibGnut_LIBRARY_EXPORT t_gionex_data
 	{
 	public:
+		/** @brief constructor. */
 		t_gionex_data() {};
+
+		/** @brief constructor. */
 		virtual ~t_gionex_data() {};
 
 		map< tuple<int, int, int>, double >  tec_val;   // lat_index/lon_index/height_index , unit TECU
