@@ -106,3 +106,7 @@ endif()
 set(pvt     GREAT_PVT)
 add_subdirectory(${ROOT}/app/${pvt}    ${BUILD_DIR}/${pvt})
 SET_PROPERTY(TARGET ${pvt}     PROPERTY FOLDER "app")
+
+set(simu     GREAT_SimuObs)
+add_subdirectory(${ROOT}/app/${simu}    ${BUILD_DIR}/${simu})
+SET_PROPERTY(TARGET ${simu}     PROPERTY FOLDER "app")

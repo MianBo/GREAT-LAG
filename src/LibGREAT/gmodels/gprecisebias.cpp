@@ -14,6 +14,7 @@
 #include "gmodels/ggmf.h"
 #include "gmodels/gtideIERS.h"
 #include "gall/gallprec.h"
+#include "gset/gsetsimu.h"
 
 #ifndef OMGE_DOT
 #define OMGE_DOT 7.2921151467e-5 ///< WGS 84 value of the earth's rotation rate [rad/sec]
@@ -26,7 +27,9 @@ namespace great
         _gall_nav = dynamic_cast<t_gallnav *>((*data)[t_gdata::GRP_EPHEM]);
         _gallobj = dynamic_cast<t_gallobj *>((*data)[t_gdata::ALLOBJ]);
         _gdata_erp = dynamic_cast<t_gpoleut1 *>((*data)[t_gdata::ALLPOLEUT1]);     
+        _gall_trp = dynamic_cast<t_galltrp*>((*data)[t_gdata::ALLTRPZTD]);
         _gdata_navde = dynamic_cast<t_gnavde *>((*data)[t_gdata::ALLDE]);
+        _gall_att = dynamic_cast<t_gallatt*>((*data)[t_gdata::ALLATTITUDE]);
         _tide = shared_ptr<t_gtide>(new t_gtideIERS(dynamic_cast<t_gallotl *>((*data)[t_gdata::ALLOTL])));
         _minElev = dynamic_cast<t_gsetproc *>(setting)->minimum_elev();
         _crd_est = dynamic_cast<t_gsetproc *>(setting)->crd_est();
