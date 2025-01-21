@@ -45,53 +45,17 @@ namespace gnut
             "CLK15_E",
             "CLK15_C",
             "CLK15_J", // receiver clocks for different systems in IF_mode
-            "CLK15_G_SAT",
-            "E15CLK_SAT",
-            "C15CLK_SAT",
-            "J15CLK_SAT", // satellite clocks for 13 combination 
             "CLK_G",
             "CLK_E",
             "CLK_C",
             "CLK_R",
             "CLK_J", // receiver clocks for different systems 
-            "CLK_VPW",
-            "CLK_VR",
-            "CLK_VQ",
             "IFB_C3",
             "IFB_C4",
             "IFB_C5",
             "IFCB_F3",
             "IFCB_F4",
             "IFCB_F5", // inter-freq. code biases for FREQ_3, FREQ_4, FREQ_5, inter-freq. clock bias for GPS FREQ_3
-            "SAT_IFB_C3",
-            "SAT_IFB_C4",
-            "SAT_IFB_C5",
-            "GPS_REC_IFB_C3",
-            "GPS_REC_IFB_C4",
-            "GPS_REC_IFB_C5",
-            "GAL_REC_IFB_C3",
-            "GAL_REC_IFB_C4",
-            "GAL_REC_IFB_C5",
-            "BDS_REC_IFB_C3",
-            "BDS_REC_IFB_C4",
-            "BDS_REC_IFB_C5",
-            "QZS_REC_IFB_C3",
-            "QZS_REC_IFB_C4",
-            "QZS_REC_IFB_C5",
-            "GPS_IFB_C3",
-            "GPS_IFB_C4",
-            "GPS_IFB_C5",
-            "GAL_IFB_C3",
-            "GAL_IFB_C4",
-            "GAL_IFB_C5",
-            "BDS_IFB_C3",
-            "BDS_IFB_C4",
-            "BDS_IFB_C5",
-            "QZS_IFB_C3",
-            "QZS_IFB_C4",
-            "QZS_IFB_C5",
-            "CLK_ICB",
-            "CLUSTERB", // initial clock bias, cluster-dependent bias
             "AMB_IF",
             "AMB13_IF",
             "AMB14_IF",
@@ -102,27 +66,25 @@ namespace gnut
             "AMB_L3",
             "AMB_L4",
             "AMB_L5", // ambiguities for indiv. freq. (number indicates freq not band)
-            "FCBS_IF",
-            "FCBS_L1",
-            "FCBS_L2",
-            "FCBS_L3",
-            "FCBS_L4",
-            "FCBS_L5", // satellite fractional cycle biases for indiv. freq.
-            "FCBR_IF",
-            "FCBR_L1",
-            "FCBR_L2",
-            "FCBR_L3",
-            "FCBR_L4",
-            "FCBR_L5", // receiver fractional cycle biases for indiv. freq.
             "GLO_ISB",
             "GLO_IFCB",
             "GLO_IFPB",
             "GAL_ISB",
             "BDS_ISB",
-            "QZS_ISB", // multi-GNSS
-            "LEO_ISB",
+            "QZS_ISB", 
+            "LEO_ISB", // multi-GNSS
+            "P1P2G_REC",
+            "P1P2E_REC",
+            "P1P2R_REC",
+            "P1P2C_REC", ///< GNSS-specific receiver code DCB P1-P2
             "IFB_GPS", "IFB_BDS", "IFB_QZS", "IFB_GAL", "IFB_GAL_2", "IFB_GAL_3",
             "IFB_BDS_2", "IFB_BDS_3",
+            "GLO_IFB",
+            "VEL_X",
+            "VEL_Y",
+            "VEL_Z", // Satellite velocity
+            "CLK_RAT", // satellite clock speed
+            "NO_DEF"
     };
 
     t_gparhead::t_gparhead(par_type type, string site, string sat) : type(type),
@@ -517,6 +479,11 @@ namespace gnut
                 return 1.0;
             else
                 return 0.0;
+        case par_type::LEO_ISB:
+            if (satData.site() == this->site && satData.gsys() == LEO) 
+                return 1.0;
+            else 
+                return 0.0;
         default:
             return 0.0;
         }
@@ -762,6 +729,9 @@ namespace gnut
         case par_type::QZS_ISB:
             type = "QZS_ISB";
             break;
+        case par_type::LEO_ISB:
+            type = "LEO_ISB";
+            break;
         case par_type::IFB_GPS:
             type = "IFB_GPS";
             break;
@@ -971,6 +941,9 @@ namespace gnut
             break;
         case par_type::QZS_ISB:
             type = "QZS_ISB";
+            break;
+        case par_type::LEO_ISB:
+            type = "LEO_ISB";
             break;
         case par_type::IFB_GPS:
             type = "IFB_GPS";

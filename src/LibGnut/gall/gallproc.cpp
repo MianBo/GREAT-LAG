@@ -54,6 +54,16 @@ namespace great
         }
     }
 
+    bool t_gallproc::Add_Data(t_gdata* data)
+    {
+        if (data)
+        {
+            _mapData[data->id_type()] = data;
+            return true;
+        }
+        return false;
+    }
+
     t_gdata *t_gallproc::operator[](t_gdata::ID_TYPE type)
     {
         if (_mapData.find(type) == _mapData.end())

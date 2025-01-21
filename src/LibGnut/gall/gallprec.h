@@ -198,6 +198,13 @@ namespace gnut
         void use_clksp3(const bool &b) { _clksp3 = b; }
 
         /**
+         * @brief use clkrnx
+         *
+         * @param b
+         */
+        void use_clkrnx(bool b) { _clkrnx = b; }
+
+        /**
          * @brief use clknav
          * 
          * @param b 
@@ -234,6 +241,15 @@ namespace gnut
          */
         virtual unsigned int nepochs(const string &prn) override;
 
+        void add_interval(int intv);
+        void reset_prec(t_map_sp3* all_prec = nullptr);
+        set<clk_type> get_clk_type() const;
+        int intv(); 
+        virtual t_gtime beg_clk(string prn = "");                            // get first precise clocks epoch
+        virtual t_gtime end_clk(string prn = "");                            // get last precise clocks epoch
+        virtual set<string> clk_objs();										// get all clk satellites and receivers
+        virtual set<t_gtime> clk_epochs();
+        virtual int clk_cdr(string sat, const t_gtime& t, double* clk, double* var = NULL, double* dclk = NULL, double* ifcb = NULL, bool chk_mask = true);//add ifcb by xiongyun
     protected:
         /**
          * @brief find appropriate t_geph element
@@ -285,6 +301,7 @@ namespace gnut
          * @return int 
          */
         virtual int _get_delta_clk(const string &sat, const t_gtime &t, int iod, t_gtime &tRef, t_map_dat &clkcorr);
+        
 
         t_map_sat _mapprec; // map of sp3 polynomials
         t_map_prn _mapsp3;  // precise orbits&clocks (SP3) - full discrete data sets
@@ -323,6 +340,7 @@ namespace gnut
         vector<double> _IFCB_F3; ///< vector of ifcb_f3 
 
         set<clk_type> _clk_type_list; ///< CLK TYPE
+        int               _intv;
     };
 
 } // namespace

@@ -924,4 +924,96 @@ namespace gnut
         }
     }
 
+    set<t_gallprec::clk_type> t_gallprec::get_clk_type() const
+    {
+        return _clk_type_list;
+    }
+    void t_gallprec::add_interval(int intv)
+    {
+        _intv = intv;
+    }
+    int t_gallprec::intv()
+    {
+        return _intv;
+
+    }
+
+    void t_gallprec::reset_prec(t_map_sp3* all_prec)
+    {
+        if (all_prec) _prec = *all_prec;
+        else _prec.clear();
+    }
+    // return first epoch of rinex clocks
+    // ----------
+    t_gtime t_gallprec::beg_clk(string prn)
+    {
+        t_gtime tmp = LAST_TIME;
+        if (!prn.empty()) {
+            if (_mapclk.find(prn) != _mapclk.end()) tmp = _mapclk[prn].begin()->first;
+        }
+        else {
+            for (auto itSAT = _mapclk.begin(); itSAT != _mapclk.end(); ++itSAT) {
+                for (auto it = itSAT->second.begin(); it != itSAT->second.end(); ++it) {
+                    if (_mapclk[itSAT->first].begin()->first < tmp) tmp = _mapclk[itSAT->first].begin()->first;
+                }
+            }
+        }
+        return tmp;
+    }
+    // return last epoch of rinex clocks
+    // ----------
+    t_gtime t_gallprec::end_clk(string prn)
+    {
+        t_gtime tmp = FIRST_TIME;
+        if (!prn.empty()) {
+            if (_mapclk.find(prn) != _mapclk.end()) tmp = _mapclk[prn].rbegin()->first;
+        }
+        else {
+            for (auto itSAT = _mapclk.begin(); itSAT != _mapclk.end(); ++itSAT) {
+                for (auto it = itSAT->second.begin(); it != itSAT->second.end(); ++it) {
+                    if (_mapclk[itSAT->first].rbegin()->first > tmp) tmp = _mapclk[itSAT->first].rbegin()->first;
+                }
+            }
+        }
+         return tmp;
+    }
+    set<string> t_gallprec::clk_objs()
+    {
+        set<string> allobj;
+        for (auto iter : _mapclk) {
+            allobj.insert(iter.first);
+        }
+        return allobj;
+    }
+
+    set<t_gtime> t_gallprec::clk_epochs()
+    {
+        set<t_gtime> alltime;
+        for (auto iter : _mapclk) {
+            for (auto time : iter.second) {
+                alltime.insert(time.first);
+            }
+        }
+        return alltime;
+    }
+
+    int t_gallprec::clk_cdr(string sat, const t_gtime& t, double* clk, double* var, double* dclk, double* ifcb, bool chk_mask)
+    {
+        if (_mapclk.find(sat) == _mapclk.end()) return -1;
+
+        map<t_gtime, t_map_dat>::iterator itReq = _mapclk[sat].lower_bound(t); // 1st equal|greater [than t]   
+
+        if (itReq == _mapclk[sat].end()) return -1;
+
+        if (itReq->first > t) return -1;
+        else
+        {
+            *clk = itReq->second["C0"];
+            *var = 0.0;
+            *dclk = 0.0;
+            *ifcb = itReq->second["IFCB_F3"];
+        }
+        return 0;
+    }
+
 } // namespace

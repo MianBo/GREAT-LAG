@@ -75,22 +75,26 @@ namespace gnut
         {GAL, {{BAND_1, "CX"}, {BAND_5, "IQX"}, {BAND_7, "IQX"}, {BAND_8, "IQX"}, {BAND_6, "ABCXZ"}}},
         {BDS, {{BAND_2, "IQX"}, {BAND_7, "IQX"}, {BAND_6, "IQX"}, {BAND_5, "DPX"}, {BAND_9, "DPZ"}, {BAND_8, "DPX"}, {BAND_1, "DPX"}}},
         {GLO, {{BAND_1, "CP"}, {BAND_2, "CP"}}},
-        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}}};
+        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}},
+        {LEO, {{BAND_1,"CF"},{BAND_2,"CF"}}}
+    };
 
     const static map<GSYS, map<GOBSBAND, string>> range_order_attr_cmb = {
         {GPS, {{BAND_1, "CPW"}, {BAND_2, "CLXPW"}, {BAND_5, "QX"}}},
         {GAL, {{BAND_1, "CX"}, {BAND_5, "IQX"}, {BAND_7, "IQX"}, {BAND_8, "IQX"}, {BAND_6, "ABCXZ"}}},
         {BDS, {{BAND_2, "IQX"}, {BAND_7, "IQX"}, {BAND_6, "IQX"}, {BAND_5, "DPX"}, {BAND_9, "DPZ"}, {BAND_8, "DPX"}, {BAND_1, "DPX"}}},
         {GLO, {{BAND_1, "CP"}, {BAND_2, "CP"}}},
-        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}}};
+        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}},
+        {LEO, {{BAND_1,"CF"},{BAND_2,"CF"}}}
+    };
 
     const static map<GSYS, map<GOBSBAND, string>> phase_order_attr_raw = {
         {GPS, {{BAND_1, "CSLXPWYM"}, {BAND_2, "CDLXPWYM"}, {BAND_5, "IQX"}}},
         {GAL, {{BAND_1, "ABCXZ"}, {BAND_5, "IQX"}, {BAND_7, "IQX"}, {BAND_8, "IQX"}, {BAND_6, "ABCXZ"}}},
-        //LX changed for BDS3
         {BDS, {{BAND_2, "XIQ"}, {BAND_7, "IQX"}, {BAND_6, "IQX"}, {BAND_5, "DPX"}, {BAND_9, "DPZ"}, {BAND_8, "DPX"}, {BAND_1, "DPX"}}},
-        {GLO, {{BAND_1, "PC"}, {BAND_2, "CP"}}},                   // fix bugs change Band_1 CP->PC  glfeng
-        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}} //glfeng
+        {GLO, {{BAND_1, "PC"}, {BAND_2, "CP"}}},                   
+        {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}}, 
+        {LEO, {{BAND_1,"CF"},{BAND_2,"CF"}}}
     };
 
     const static map<GSYS, map<GOBSBAND, string>> phase_order_attr_cmb =
@@ -98,9 +102,9 @@ namespace gnut
             {GPS, {{BAND_1, "CSLXPWYM"}, {BAND_2, "CDLXPWYM"}, {BAND_5, "IQX"}}},
             {GAL, {{BAND_1, "ABCXZ"}, {BAND_5, "IQX"}, {BAND_7, "IQX"}, {BAND_8, "IQX"}, {BAND_6, "ABCXZ"}}},
             {BDS, {{BAND_2, "QXI"}, {BAND_7, "IQX"}, {BAND_6, "IQX"}, {BAND_5, "DPX"}, {BAND_9, "DPZ"}, {BAND_8, "DPX"}, {BAND_1, "DPX"}}},
-            {GLO, {{BAND_1, "PC"}, {BAND_2, "CP"}}},                   // fix bugs change Band_1 CP->PC  glfeng
-            {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}} //glfeng
-
+            {GLO, {{BAND_1, "PC"}, {BAND_2, "CP"}}},                   
+            {QZS, {{BAND_1, "CSLX"}, {BAND_2, "LX"}, {BAND_5, "IQX"}}}, 
+            {LEO, {{BAND_1,"CF"},{BAND_2,"CF"}}}
     };
 
     class t_obscmb;
@@ -113,6 +117,7 @@ namespace gnut
     public:
         /** @brief default constructor. */
         t_gobsgnss();
+
         /**
          * @brief Construct a new t gobsgnss object
          * 

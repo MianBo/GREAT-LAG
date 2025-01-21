@@ -66,6 +66,8 @@ namespace gnut
         string _orbrefs;          ///< orb reference
         string _orbtype;          ///< orb type
         string _agency;           ///< agency
+        int _num_leo = 0;         ///< number of leo
+        map<string, string> _leo; ///< map satname prn
         vector<string> _prn;      ///< satellite prn
         vector<string> _sat_sp3;  ///< satellite name
         vector<int> _acc;         ///< acc

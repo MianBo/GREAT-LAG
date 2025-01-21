@@ -701,7 +701,6 @@ namespace great
         double sin_mi_s = sin(mi_s);
         double mi_f = MUDOT_GLO * (atan2(-tan_beta, -sin_mi_s) - atan2(-tan_beta, sin_mi_s)) / R + mi_s;
 
-        // debug by ZHJ initial
         double yaw = 0.0;
 
         if (mi_s <= mi && mi < mi_f)
@@ -730,7 +729,6 @@ namespace great
         double sin_mi_s = sin(mi_s);
         double mi_f = MUDOT_GLO * (atan2(-tan_beta, -sin_mi_s) - atan2(-tan_beta, sin_mi_s)) / R + mi_s;
 
-        // debug by ZHJ initial
         double yaw = 0.0;
 
         if (mi_s <= mi && mi < mi_f)

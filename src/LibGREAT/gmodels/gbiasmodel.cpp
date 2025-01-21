@@ -49,23 +49,27 @@ namespace great
         _sigCodeGAL = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(GAL);
         _sigCodeBDS = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(BDS);
         _sigCodeQZS = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(QZS);
+        _sigCodeLEO = dynamic_cast<t_gsetgnss*>(setting)->sigma_C(LEO);
         _sigPhaseGPS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GPS);
         _sigPhaseGLO = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GLO);
         _sigPhaseGAL = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GAL);
         _sigPhaseBDS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(BDS);
         _sigPhaseQZS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(QZS);
+        _sigPhaseLEO = dynamic_cast<t_gsetgnss*>(setting)->sigma_L(LEO);
 
         _band_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::GPS);
         _band_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::GAL);
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::LEO);
 
         _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GPS);
         _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GAL);
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::LEO);
 
         _meanpole_model = dynamic_cast<t_gsetproc *>(setting)->mean_pole_model();
     }
@@ -115,11 +119,13 @@ namespace great
         _sigCodeGAL = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(GAL);
         _sigCodeBDS = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(BDS);
         _sigCodeQZS = dynamic_cast<t_gsetgnss *>(setting)->sigma_C(QZS);
+        _sigCodeLEO = dynamic_cast<t_gsetgnss*>(setting)->sigma_C(LEO);
         _sigPhaseGPS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GPS);
         _sigPhaseGLO = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GLO);
         _sigPhaseGAL = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(GAL);
         _sigPhaseBDS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(BDS);
         _sigPhaseQZS = dynamic_cast<t_gsetgnss *>(setting)->sigma_L(QZS);
+        _sigPhaseLEO = dynamic_cast<t_gsetgnss*>(setting)->sigma_L(LEO);
 
         if (_spdlog)
             SPDLOG_LOGGER_INFO(_spdlog, "sigCodeGPS ", format("%16.8f", _sigCodeGPS));
@@ -132,6 +138,8 @@ namespace great
         if (_spdlog)
             SPDLOG_LOGGER_INFO(_spdlog, "sigCodeQZS ", format("%16.8f", _sigCodeQZS));
         if (_spdlog)
+            SPDLOG_LOGGER_INFO(_spdlog, "sigCodeLEO ", format("%16.8f", _sigCodeLEO));
+        if (_spdlog)
             SPDLOG_LOGGER_INFO(_spdlog, "sigPhaseGPS", format("%16.8f", _sigPhaseGPS));
         if (_spdlog)
             SPDLOG_LOGGER_INFO(_spdlog, "sigPhaseGLO", format("%16.8f", _sigPhaseGLO));
@@ -141,6 +149,8 @@ namespace great
             SPDLOG_LOGGER_INFO(_spdlog, "sigPhaseBDS", format("%16.8f", _sigPhaseBDS));
         if (_spdlog)
             SPDLOG_LOGGER_INFO(_spdlog, "sigPhaseQZS", format("%16.8f", _sigPhaseQZS));
+        if (_spdlog)
+            SPDLOG_LOGGER_INFO(_spdlog, "sigPhaseLEO", format("%16.8f", _sigPhaseLEO));
 
 
         _band_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::GPS);
@@ -148,12 +158,14 @@ namespace great
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(setting)->band_index(gnut::LEO);
 
         _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GPS);
         _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GAL);
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(setting)->freq_index(gnut::LEO);
 
         _meanpole_model = dynamic_cast<t_gsetproc *>(setting)->mean_pole_model();
     }
@@ -217,6 +229,9 @@ namespace great
                 case QZS:
                     sigRange = _sigCodeQZS;
                     break;
+                case LEO:
+                    sigRange = _sigCodeLEO;
+                    break;
                 default:
                     sigRange = 0.0;
                     return false;
@@ -248,6 +263,9 @@ namespace great
                     break;
                 case QZS:
                     sigPhase = _sigPhaseQZS;
+                    break;
+                case LEO:
+                    sigPhase = _sigPhaseLEO;
                     break;
                 default:
                     sigPhase = 0.0;
@@ -501,6 +519,16 @@ namespace great
             break;
         case par_type::QZS_ISB:
             if (obsdata.site() == par.site && obsdata.gsys() == QZS)
+            {
+                partial = 1.0;
+            }
+            break;
+        case par_type::LEO_ISB:
+            if (obsdata.site() == par.site && obsdata.gsys() == LEO)
+            {
+                partial = 1.0;
+            }
+            if (("L" + obsdata.sat()) == par.site && obsdata.gsys() == LEO)
             {
                 partial = 1.0;
             }

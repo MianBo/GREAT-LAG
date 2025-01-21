@@ -453,7 +453,6 @@ namespace gnut
                     break;
                 }
                 _tmpsize += sz;
-                //      cout << "_line skip: " << _line;
             }
 
             t_gcoder::_consume(_tmpsize);
@@ -544,7 +543,7 @@ namespace gnut
         // not enough data to recognize standard epoch or special event
         if (_line.length() < 35)
             return _stop_read();
-        _flag = _line[31]; //  cout << "_flag = [" << _flag << "]\n";
+        _flag = _line[31]; 
         _nsat = str2int(_line.substr(32, 3));
 
         if (_line.substr(0, 1) != ">")
@@ -644,7 +643,12 @@ namespace gnut
         if ((addsize = t_gcoder::_getline(_line, _tmpsize)) >= 3)
         {
             _tmpsize += addsize;
-            tmpsat = t_gsys::eval_sat(_line.substr(1, 2), t_gsys::char2gsys(_line[0]));
+            //read LEO satellite with PRN number similar to 201
+            if (_line[0] < 'A')
+            {
+                tmpsat = t_gsys::eval_sat_addleo(_line.substr(0, 3), t_gsys::char2gsys(_line[0]));
+            }
+            else{ tmpsat = t_gsys::eval_sat(_line.substr(1, 2), t_gsys::char2gsys(_line[0])); }   
         }
         else
             return _stop_read();
@@ -661,9 +665,19 @@ namespace gnut
         t_spt_gobs obs = make_shared<t_gobsgnss>(_spdlog, _site, tmpsat, _epoch);
 
         // loop over sys-defined observation types
-        t_rnxhdr::t_vobstypes::const_iterator it = _mapobs[tmpsat.substr(0, 1)].begin();
+        t_rnxhdr::t_vobstypes::const_iterator it;
+        string tmp_sys = tmpsat.substr(0, 1);
+        if (tmp_sys[0] < 'A')
+        {
+            tmp_sys = "L";
+            it = _mapobs[tmp_sys].begin();
+        }
+        else 
+        {
+            it = _mapobs[tmp_sys].begin();
+        }
         unsigned int len;
-        while (_complete && (it != _mapobs[tmpsat.substr(0, 1)].end()))
+        while (_complete && (it != _mapobs[tmp_sys].end()))
         {
             idx = 3 + 16 * ii;
             len = _line.length();
@@ -701,7 +715,7 @@ namespace gnut
         // EXCEPTION FOR BEIDOU (B1 --> B2)
         if (t_gsys::str2gsys(sys) == BDS)
         {
-            if (go[1] == '1' && _version <= "3.03")
+            if (go[1] == '1' && _version <= "3.02")//BDS 1 to 2
             {
                 go[1] = '2';
 

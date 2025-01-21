@@ -63,6 +63,24 @@ namespace gnut
         void gnsssys(char s) { _gnsssys = s; }
         char gnsssys() { return _gnsssys; }
 
+        /**
+        * @brief encode header of  resfile
+        * @param[in]  buff        buffer of the data
+        * @param[in]  sz          buffer size of the data
+        * @param[in]  errmsg      error message of the data decoding
+        * @return  size of header encoding
+        */
+        virtual  int encode_head(char* buff, int sz, vector<string>& errmsg)override;
+
+        /**
+        * @brief encode data of  resfile
+        * @param[in]  buff        buffer of the data
+        * @param[in]  sz          buffer size of the data
+        * @param[in]  errmsg      error message of the data decoding
+        * @return  size of data body encoding
+        */
+        virtual  int encode_data(char* buff, int sz, int& cnt, vector<string>& errmsg)override;
+
     protected:
         /** @brief meta struct. */
         struct t_meta
@@ -91,6 +109,8 @@ namespace gnut
 
     private:
         char _gnsssys; ///< gnss system
+        // get galllprec data from data
+        t_gallprec* _get_prec_data();
     };
 
 } // namespace

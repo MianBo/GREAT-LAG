@@ -508,7 +508,12 @@ namespace gnut
 
          auto default_band1 = GNSS_BAND_PRIORITY.at(gsys)[1];
          auto default_band2 = GNSS_BAND_PRIORITY.at(gsys)[2];
-         auto default_band3 = GNSS_BAND_PRIORITY.at(gsys)[3];
+         if (gsys != GSYS::LEO) 
+         {
+             auto default_band3 = GNSS_BAND_PRIORITY.at(gsys)[3];
+         }
+
+        
 
         if (obs1 == GOBS::X && obs2 == GOBS::X)
         {
@@ -798,6 +803,12 @@ namespace gnut
                 return 0.0;
             }
 
+        case LEO: switch (b) {
+
+        case BAND_1:return L01_F;
+        case BAND_2:return L02_F;
+        }
+
         case SBS:
             switch (b)
             {
@@ -938,10 +949,6 @@ namespace gnut
     double t_gobsgnss::_obs_range(const t_gband &gb) const
     {
         t_gobs gobs(TYPE, gb.band(), gb.attr());
-
-#ifdef DEBUG
-        cout << _epoch.str_hms() << " sat: " << sat() << " band: " << gobsband2str(gb.band()) << " attr: " << gobsattr2str(gb.attr()) << endl;
-#endif
 
         return _obs_range(gobs);
     }

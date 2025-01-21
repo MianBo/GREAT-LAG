@@ -142,6 +142,16 @@ namespace gnut
         return tmp;
     }
 
+    double t_gsetflt::rndwk_leo()
+    {
+        _gmutex.lock();
+
+        double tmp = _doc.child(XMLKEY_ROOT).child(XMLKEY_FLT).attribute("rndwk_leo").as_double();
+
+        _gmutex.unlock();
+        return tmp;
+    }
+
     double t_gsetflt::rndwk_amb()
     {
         _gmutex.lock();
@@ -250,6 +260,7 @@ namespace gnut
         _default_attr(node, "rndwk_gal", _rndwk_gal);
         _default_attr(node, "rndwk_bds", _rndwk_bds);
         _default_attr(node, "rndwk_qzs", _rndwk_qzs);
+        _default_attr(node, "rndwk_leo", _rndwk_leo);
         _default_attr(node, "rndwk_ztd", _rndwk_ztd);
         _default_attr(node, "noise_vion", _noise_vion);
         _default_attr(node, "rndwk_grd", _rndwk_grd);

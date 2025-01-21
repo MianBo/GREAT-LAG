@@ -56,6 +56,9 @@ namespace gnut
         _qzsStoModel = new t_randomwalk();
         _qzsStoModel->setq(dynamic_cast<t_gsetflt *>(_set)->rndwk_qzs());
 
+        _leoStoModel = new t_randomwalk();
+        _leoStoModel->setq(dynamic_cast<t_gsetflt*>(_set)->rndwk_leo());
+
         _clkStoModel = new t_whitenoise(dynamic_cast<t_gsetflt *>(_set)->noise_clk());
         _crdStoModel = new t_whitenoise(dynamic_cast<t_gsetflt *>(_set)->noise_crd());
 
@@ -159,6 +162,9 @@ namespace gnut
         _qzsStoModel = new t_randomwalk();
         _qzsStoModel->setq(dynamic_cast<t_gsetflt *>(_set)->rndwk_qzs());
 
+        _leoStoModel = new t_randomwalk();
+        _leoStoModel->setq(dynamic_cast<t_gsetflt*>(_set)->rndwk_leo());
+
         _clkStoModel = new t_whitenoise(dynamic_cast<t_gsetflt *>(_set)->noise_clk());
         _crdStoModel = new t_whitenoise(dynamic_cast<t_gsetflt *>(_set)->noise_crd());
 
@@ -225,12 +231,14 @@ namespace gnut
 		_band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_set)->band_index(gnut::GLO);
 		_band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_set)->band_index(gnut::BDS);
 		_band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_set)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(_set)->band_index(gnut::LEO);
 
 		_freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(_set)->freq_index(gnut::GPS);
 		_freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(_set)->freq_index(gnut::GAL);
 		_freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_set)->freq_index(gnut::GLO);
 		_freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_set)->freq_index(gnut::BDS);
 		_freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_set)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(_set)->freq_index(gnut::LEO);
 
     } // end constructor
 
@@ -266,6 +274,11 @@ namespace gnut
         {
             delete _qzsStoModel;
             _qzsStoModel = nullptr;
+        }
+        if (_leoStoModel)
+        {
+            delete _leoStoModel;
+            _leoStoModel = nullptr;
         }
         if (_clkStoModel)
         {
@@ -871,6 +884,9 @@ namespace gnut
         case QZS:
             sigCode = _sigCodeQZS;
             break;
+        case LEO:
+            sigCode = _sigCodeLEO;
+            break;
         default:
             sigCode = 0.0;
         }
@@ -958,7 +974,9 @@ namespace gnut
             gs == GPS ||
             gs == GAL ||
             gs == BDS ||
-            gs == QZS)
+            gs == QZS ||
+            gs == LEO 
+            )
         {
 
             for (unsigned int ipar = 1; ipar <= _param.parNumber(); ipar++)
@@ -1038,6 +1056,13 @@ namespace gnut
                 break;
             case QZS:
                 if (it->gsys() != QZS)
+                {
+                    it = _data.erase(it);
+                    continue;
+                }
+                break;
+            case LEO:
+                if (it->gsys() != LEO)
                 {
                     it = _data.erase(it);
                     continue;
@@ -1504,6 +1529,22 @@ namespace gnut
             }
         }
 
+        i = _param.getParam(_site, par_type::LEO_ISB, "");
+        if (i >= 0)
+        {
+            if (!_initialized || _Qx(i + 1, i + 1) == 0.0)
+            {
+                _Qx(i + 1, i + 1) = _sig_init_leo * _sig_init_leo;
+            }
+            else
+            {
+                if (_cntrep == 1)
+                    _Qx(i + 1, i + 1) += _leoStoModel->getQ();
+                if (_smooth)
+                    _Noise(i + 1, i + 1) = _leoStoModel->getQ();
+            }
+        }
+
         i = _param.getParam(_site, par_type::TRP, "");
         if (i >= 0)
         {
@@ -1694,6 +1735,10 @@ namespace gnut
         // QZS ISB
         _qzsStoModel->updateTime(epo);
         _qzsStoModel->setTcurr(epo);
+        
+        //LEO ISB 
+        _leoStoModel->updateTime(epo);
+        _leoStoModel->setTcurr(epo);
     }
 
     void t_gsppflt::_syncSys()
@@ -1705,6 +1750,7 @@ namespace gnut
         bool obsGal = false;
         bool obsBds = false;
         bool obsQzs = false;
+        bool obsLeo = false;
         vector<t_gsatdata>::iterator it;
         for (it = _data.begin(); it != _data.end(); it++)
         { // loop over all observations
@@ -1719,26 +1765,32 @@ namespace gnut
                 obsBds = true;
             if (it->gsys() == QZS)
                 obsQzs = true;
+            if (it->gsys() == LEO)
+                obsLeo = true;
         }
 
         bool onlyGlo = false;
         bool onlyGal = false;
         bool onlyBds = false;
         bool onlyQzs = false;
+        bool onlyLeo = false;
 
-        if (obsGlo && !obsGps && !obsGal && !obsBds && !obsQzs)
+        if (obsGlo && !obsGps && !obsGal && !obsBds && !obsQzs && !obsLeo)
             onlyGlo = true;
-        if (obsGal && !obsGps && !obsGlo && !obsBds && !obsQzs)
+        if (obsGal && !obsGps && !obsGlo && !obsBds && !obsQzs && !obsLeo)
             onlyGal = true;
-        if (obsBds && !obsGps && !obsGlo && !obsGal && !obsQzs)
+        if (obsBds && !obsGps && !obsGlo && !obsGal && !obsQzs && !obsLeo)
             onlyBds = true;
-        if (obsQzs && !obsGps && !obsGlo && !obsGal && !obsBds)
+        if (obsQzs && !obsGps && !obsGlo && !obsGal && !obsBds && !obsLeo)
             onlyQzs = true;
+        if (obsLeo && !obsGps && !obsGlo && !obsGal && !obsBds && !obsQzs)
+            onlyLeo = true;
 
         bool parGlo = false;
         bool parGal = false;
         bool parBds = false;
         bool parQzs = false;
+        bool parLeo = false;
         for (unsigned int i = 0; i < _param.parNumber(); i++)
         {
             if (_param[i].site != _site)
@@ -1751,6 +1803,8 @@ namespace gnut
                 parBds = true;
             if (_param[i].parType == par_type::QZS_ISB)
                 parQzs = true;
+            if (_param[i].parType == par_type::LEO_ISB)
+                parLeo = true;
         }
 
         // Add GLO ISB parameter
@@ -1793,6 +1847,16 @@ namespace gnut
             _Qx(_param.parNumber(), _param.parNumber()) = _sig_init_qzs * _sig_init_qzs;
         }
 
+        // Add LEO ISB parameter
+        if (!parLeo && obsLeo && !onlyLeo)
+        {
+            t_gpar newPar(_data.begin()->site(), par_type::LEO_ISB, _param.parNumber() + 1, "");
+            newPar.value(0.0);
+            _param.addParam(newPar);
+            Matrix_addRC(_Qx, _param.parNumber(), _param.parNumber());
+            _Qx(_param.parNumber(), _param.parNumber()) = _sig_init_leo * _sig_init_leo;
+        }
+
         // Remove GLO ISB paremeter
         if (parGlo && !obsGlo)
         {
@@ -1824,6 +1888,15 @@ namespace gnut
         if (parQzs && !obsQzs)
         {
             int i = _param.getParam(_data.begin()->site(), par_type::QZS_ISB, "");
+            Matrix_remRC(_Qx, _param[i].index, _param[i].index);
+            _param.delParam(i);
+            _param.reIndex();
+        }
+
+        // Remove LEO ISB paremeter
+        if (parLeo && !obsLeo)
+        {
+            int i = _param.getParam(_data.begin()->site(), par_type::LEO_ISB, "");
             Matrix_remRC(_Qx, _param[i].index, _param[i].index);
             _param.delParam(i);
             _param.reIndex();

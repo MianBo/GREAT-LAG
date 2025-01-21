@@ -139,18 +139,31 @@ namespace gnut
             }
             else if (tmp.substr(0, 2) == "%c")
             {
-                _timesys.push_back(tmp.substr(3, 2));
-                _timesys.push_back(tmp.substr(6, 2));
-                _timesys.push_back(tmp.substr(9, 3));
-                _timesys.push_back(tmp.substr(13, 3));
-                _timesys.push_back(tmp.substr(17, 4));
-                _timesys.push_back(tmp.substr(22, 4));
-                _timesys.push_back(tmp.substr(27, 4));
-                _timesys.push_back(tmp.substr(32, 4));
-                _timesys.push_back(tmp.substr(37, 5));
-                _timesys.push_back(tmp.substr(43, 5));
-                _timesys.push_back(tmp.substr(49, 5));
-                _timesys.push_back(tmp.substr(55, 5));
+                if (tmp.substr(3, 1) == "L")
+                {
+                    istringstream istr(tmp.substr(4));
+                    string ileo;
+                    while (istr >> ileo)
+                    {
+                        _leo[_prn[_num_leo]] = ileo;
+                        _num_leo++;
+                    }
+
+                }
+                else{
+                    _timesys.push_back(tmp.substr(3, 2));
+                    _timesys.push_back(tmp.substr(6, 2));
+                    _timesys.push_back(tmp.substr(9, 3));
+                    _timesys.push_back(tmp.substr(13, 3));
+                    _timesys.push_back(tmp.substr(17, 4));
+                    _timesys.push_back(tmp.substr(22, 4));
+                    _timesys.push_back(tmp.substr(27, 4));
+                    _timesys.push_back(tmp.substr(32, 4));
+                    _timesys.push_back(tmp.substr(37, 5));
+                    _timesys.push_back(tmp.substr(43, 5));
+                    _timesys.push_back(tmp.substr(49, 5));
+                    _timesys.push_back(tmp.substr(55, 5));
+                }  
                 if (_spdlog)
                     SPDLOG_LOGGER_DEBUG(_spdlog, "reading satellite systems");
             }
@@ -193,7 +206,6 @@ namespace gnut
 
     int t_sp3::decode_data(char *buff, int sz, int &cnt, vector<string> &errmsg)
     {
-
         _mutex.lock();
 
         if (t_gcoder::_add2buffer(buff, sz) == 0)
@@ -266,7 +278,14 @@ namespace gnut
 
                 ss >> noskipws >> flg >> sat[0] >> sat[1] >> sat[2] >> skipws >> pos[0] >> pos[1] >> pos[2] >> pos[3];
                 string prn;
-                prn = t_gsys::eval_sat(string(sat));
+                if (_leo.size() == 0 && _num_leo == 0)
+                {
+                    prn = t_gsys::eval_sat(string(sat));
+                }
+                else
+                {
+                    prn = _leo[sat];
+                }
 
                 for (int i = 0; i < 3; i++)
                     if (pos[i] == 0.0)
@@ -279,16 +298,33 @@ namespace gnut
                 else
                     t = pos[3] / 1000000; // us -> s
                 // fill single data record
-                if (!_filter_gnss(prn))
+                if (_leo.size() == 0 && _num_leo == 0)
                 {
-                    if (_spdlog)
-                        SPDLOG_LOGGER_DEBUG(_spdlog, "skip satellite : {} for you do not set at the xml file", prn);
+                    if (!_filter_gnss(prn))
+                    {
+                        if (_spdlog)
+                            SPDLOG_LOGGER_DEBUG(_spdlog, "skip satellite : {} for you do not set at the xml file", prn);
+                    }
+                    else
+                    {
+                        map<string, t_gdata*>::iterator it = _data.begin();
+                        while (it != _data.end())
+                        {
+                            if (it->second->id_type() == t_gdata::ALLPREC)
+                            {
+                                ((t_gallprec*)it->second)->addpos(prn, _lastepo, xyz, t, dxyz, dt);
+                                ((t_gallprec*)it->second)->add_interval(prn, _orbintv);
+                                ((t_gallprec*)it->second)->add_agency(_agency);
+                            }
+
+                            it++;
+                        }
+                    }
                 }
                 else
                 {
                     map<string, t_gdata*>::iterator it = _data.begin();
-                    while (it != _data.end())
-                    {
+                    while (it != _data.end()) {
                         if (it->second->id_type() == t_gdata::ALLPREC)
                         {
                             ((t_gallprec*)it->second)->addpos(prn, _lastepo, xyz, t, dxyz, dt);
@@ -297,8 +333,8 @@ namespace gnut
                         }
 
                         it++;
+                    }
                 }
-            }
 
                 if (ss.fail())
                 {
@@ -325,16 +361,34 @@ namespace gnut
                 ss >> noskipws >> flg >> sat[0] >> sat[1] >> sat[2] >> skipws >> vel[0] >> vel[1] >> vel[2] >> vel[3];
 
                 string prn;
-                prn = t_gsys::eval_sat(string(sat));
+                if (_leo.size() == 0 && _num_leo == 0)
+                {   
+                    prn = t_gsys::eval_sat(string(sat));
+                }
+                else
+                {
+                    prn = _leo[sat];
+                }
 
                 // fill single data record
                 map<string, t_gdata *>::iterator it = _data.begin();
                 while (it != _data.end())
                 {
-                    if (!_filter_gnss(prn))
+                    if (_leo.size() == 0 && _num_leo == 0)
                     {
+                        if (!_filter_gnss(prn))
+                        {
+                            it++;
+                        }
+                        else
+                        {
+                            if (it->second->id_type() == t_gdata::ALLPREC)
+                            {
+                                ((t_gallprec*)it->second)->addvel(prn, _lastepo, vel, var);
 
-                        it++;
+                            }
+                            it++;
+                        }
                     }
                     else
                     {
@@ -343,9 +397,7 @@ namespace gnut
                             ((t_gallprec*)it->second)->addvel(prn, _lastepo, vel, var);
                         }
                         it++;
-                        //     }
                     }
-
                     // fill single data record
                 }
 

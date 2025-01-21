@@ -342,6 +342,20 @@ namespace gnut
         return tmp_double;
     }
 
+    double t_gsetproc::sig_init_leo()
+    {
+        _gmutex.lock();
+        string tmp = _doc.child(XMLKEY_ROOT).child(XMLKEY_PROC).child_value("sig_init_leo");
+        str_erase(tmp);
+        double tmp_double;
+        if (tmp != "")
+            tmp_double = std::stod(tmp);
+        else
+            tmp_double = _sig_init_leo;
+        _gmutex.unlock();
+        return tmp_double;
+    }
+
     double t_gsetproc::minimum_elev()
     {
         _gmutex.lock();

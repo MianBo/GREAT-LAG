@@ -151,6 +151,9 @@ namespace gnut
         case ALLOTL:
             str = "ALLOTL";
             break;
+        case ALLATTITUDE:
+            str = "ALLATTITUDE";
+            break;
         case POS:
             str = "POS";
             break;

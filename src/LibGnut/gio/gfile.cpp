@@ -27,7 +27,6 @@ namespace gnut
 
     t_gfile::~t_gfile()
     {
-
         reset();
     }
 
@@ -191,4 +190,40 @@ namespace gnut
         return -1;
     }
 
+    int t_gfile::_gio_write(const char* buff, int size)
+    {
+     
+        if (mask() == "") return 0;
+
+        this->_write(buff, size);
+
+        return size;
+    }
+
+    // ----------
+    int t_gfile::_write(const char* b, int s)
+    {
+        return  _file->write(b, s);
+
+        return -1;
+    }
+    // init write function (write header)
+// ----------
+    int t_gfile::init_write()
+    {
+        if (!_coder) { return 0; }
+
+        char* loc_buff = new char[FILEHDR_SIZE];
+
+        vector<string> errmsg;
+
+        int nbytes = 0;
+        do {
+            if ((nbytes = _coder->encode_head(loc_buff, FILEHDR_SIZE, errmsg)) < 0) break;
+        } while ((nbytes > 0) && (_gio_write(loc_buff, nbytes) > 0) && _stop != 1);
+
+        delete[] loc_buff;
+
+        return 1;
+    }
 } // namespace

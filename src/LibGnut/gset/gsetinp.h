@@ -53,6 +53,11 @@ namespace gnut
         RINEXO_INP,     ///< rinexo file
         SP3_INP,        ///< SP3 file
         UPD_INP,        ///< upd file
+        IONEX_INP,      ///< ion file
+        TRPZTD_INP,     ///< TRP file
+        SP3SIMU_INP,    ///< for simu
+        RINEXCSIMU_INP, ///< for simu
+
         UNDEF = -1
     };
 

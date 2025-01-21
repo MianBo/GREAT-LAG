@@ -119,6 +119,8 @@ namespace gnut
                 all_sats.insert(itSAT->first);
             else if (gnss == QZS && sys == QZS)
                 all_sats.insert(itSAT->first);
+            else if (gnss == LEO && sys == LEO)
+                all_sats.insert(itSAT->first);
             else if (gnss == SBS && sys == SBS)
                 all_sats.insert(itSAT->first);
             itSAT++;

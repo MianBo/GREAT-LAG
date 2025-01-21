@@ -46,6 +46,7 @@ namespace gnut
         t_gio();
 
         t_gio(t_spdlog spdlog);
+
         /** @brief default destructor. */
         virtual ~t_gio();
 
@@ -149,6 +150,8 @@ namespace gnut
         bool operator==(const t_gio &n) const;
         friend ostream &operator<<(ostream &os, const t_gio &n);
 
+        virtual void run_write();
+        virtual int init_write() { return _opened = _init_common(); }
     protected:
 
         /**
@@ -205,6 +208,8 @@ namespace gnut
         int _running;     ///< running
         t_gcoder *_coder; ///< decoder/encoder
         t_gmutex _gmutex; ///< mutual exlusion
+
+        virtual int _gio_write(const char* buff, int size) = 0;
     private:
     };
 

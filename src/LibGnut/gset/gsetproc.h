@@ -230,6 +230,7 @@ namespace gnut
         double sig_init_gal();
         double sig_init_bds();
         double sig_init_qzs();
+        double sig_init_leo();
 
         /**@brief cut-off satellite elevation(deg) */
         double minimum_elev();
@@ -324,6 +325,7 @@ namespace gnut
         double _sig_init_gal;  ///< accuracy of initial Galileo system time difference
         double _sig_init_bds;  ///< accuracy of initial BeiDou system time difference
         double _sig_init_qzs;  ///< accuracy of initial QZSS system time difference
+        double _sig_init_leo;  ///< accuracy of initial LEO system time difference
         double _minimum_elev;  ///< elevation angle cut-off [degree]
         double _max_res_norm;  ///< normalized residuals threshold
         string _crd_est;       ///< FIX or estimate CRD

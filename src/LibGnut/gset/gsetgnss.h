@@ -136,12 +136,14 @@ namespace gnut
          */
         double sigma_L(GSYS gsys);
 
+
         /**
          * @brief get sigma value of C obs for gsys
          * @param[in] gsys system
          * @return double : sigma value of C obs for gsys
          */
         double sigma_C(GSYS gsys);
+
 
         /**
          * @brief get sigma value of D obs for gsys
@@ -171,6 +173,22 @@ namespace gnut
          */
         double maxres_D(GSYS gsys);
 
+
+        /**
+         * @brief get sigma value of L obs for gsys
+         * @param[in] gsys system
+         * @return double : sigma value of L obs for gsys
+         */
+        double           maxL_simu(GSYS gsys); // add for simu by xjhan
+        double           sigL_simu(GSYS gsys);
+
+        /**
+         * @brief get sigma value of C obs for gsys
+         * @param[in] gsys system
+         * @return double : sigma value of C obs for gsys
+         */
+        double           sigC_simu(GSYS gsys); // add for simu by xjhan
+        double           maxC_simu(GSYS gsys);
     protected:
         /**
          * @brief get obs type of system:gsys form XML
@@ -262,6 +280,7 @@ namespace gnut
         map<GSYS, vector<string>> _attr_str; ///< default set
 
         map<GSYS, t_gpair> _sigma_def;         ///< default set
+        map<GSYS, t_gpair> _sigma_def_LEO;      ///< default set for LEO
         map<GSYS, t_gpair> _maxres_def;        ///< default set
         map<GSYS, double> _sigma_def_doppler;  ///< default set for doppler
         map<GSYS, double> _maxres_def_doppler; ///< default set for doppler

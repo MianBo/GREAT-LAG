@@ -212,7 +212,7 @@ namespace gnut
                 sat[3] = '\0';
                 char dummy;
                 istr >> noskipws >> dummy >> sat[0] >> sat[1] >> sat[2] >> skipws >> yr >> mn >> dd >> hr >> mi >> sc >> ncol;
-                id = t_gsys::eval_sat(string(sat));
+                id = t_gsys::eval_sat_addleo(string(sat));
             }
             else
             {
@@ -279,5 +279,156 @@ namespace gnut
         return consume;
     }
 
+
+    int t_rinexc::encode_head(char* buff, int sz, vector<string>& errmsg)
+    {
+        _mutex.lock();
+
+        t_gallprec* clkdata = nullptr;
+
+        if (!(clkdata = _get_prec_data())) {
+            _mutex.unlock();
+            return -1;
+        }
+
+        set<t_gallprec::clk_type> types = clkdata->get_clk_type();
+        if (types.empty()) {
+            _mutex.unlock();
+            return -1;
+        }
+
+        string strAR = (types.find(t_gallprec::clk_type::AR) != std::end(types)) ? "AR" : "";
+        string strAS = (types.find(t_gallprec::clk_type::AS) != std::end(types)) ? "AS" : "";
+
+        clkdata->add_interval(_int);
+        double intv = clkdata->intv();
+
+        if (_ss_position == 0)
+        {
+            _ss << setiosflags(ios::fixed) << setprecision(2)
+                << setiosflags(ios::right) << setw(9) << 2.0 << setw(11) << ""
+                << setw(1) << "C" << setw(19) << ""
+                << setw(1) << "G" << setw(19) << ""
+                << "RINEX VERSION / TYPE" << endl;
+
+            _ss << setiosflags(ios::right) << setw(9)
+                << fixed << setprecision(2) << intv
+                << setw(51) << " " << "INTERVAL" << endl;
+
+            _ss << setiosflags(ios::left)
+                << setw(20) << "GREAT"
+                << setw(20) << "SGG-WHU"
+                << setw(16) << t_gtime(t_gtime::UTC).str("%Y%m%d %H%M%S")
+                << setw(4) << "UTC"
+                << "PGM / RUN BY / DATE " << endl;
+
+            _ss << setw(6) << clkdata->get_clk_type().size();
+            if (strAR.empty())
+            {
+                _ss << setw(4) << "" << setw(2) << strAS
+                    << setw(4) << "" << setw(2) << strAR;
+            }
+            else
+            {
+                _ss << setw(4) << "" << setw(2) << strAR
+                    << setw(4) << "" << setw(2) << strAS;
+            }
+            _ss << setw(42) << ""
+                << "# / TYPES OF DATA   " << endl;
+
+            t_gtime beg_time = clkdata->beg_clk();
+            t_gtime end_time = clkdata->end_clk();
+            _ss << setw(6) << 1 << setw(1) << ""
+                << beg_time.str("%Y %C %L %K %O %P")
+                << setw(1) << ""
+                << end_time.str("%Y %C %L %K %O %P")
+                << "# OF CLK REF" << endl;
+
+            _ss << setw(60) << ""
+                << "END OF HEADER       " << endl;
+        }
+
+        int size = _fill_buffer(buff, sz);
+        _mutex.unlock();
+        return size;
+    }
+
+    int t_rinexc::encode_data(char* buff, int sz, int& cnt, vector<string>& errmsg)
+    {
+        _mutex.lock();
+
+        t_gallprec* clkdata = nullptr;
+
+        if (!(clkdata = _get_prec_data())) {
+            _mutex.unlock();
+            return -1;
+        }
+
+        if (_ss_position == 0)
+        {
+            auto epochs = clkdata->clk_epochs();
+            auto objs = clkdata->clk_objs();
+
+            for (auto epoch : epochs) {
+                for (auto obj : objs) {
+
+
+                    double data[4] = { 0.0,0.0,0.0,0.0 };//data[3] -> data[4] by xiongyun
+                    clkdata->clk_cdr(obj, epoch, data, data + 1, data + 2, data + 3);
+
+                    if (double_eq(0.0, data[0]))
+                    {
+                        cerr << "The clk is Losing for " + epoch.str_mjdsod() + "obj : " + obj << endl;
+                    }
+
+                    int col = 1;
+                    if (data[3] != 0.0) {
+                        col = 4;
+                    }
+                    else if (data[2] != 0.0) {
+                        col = 3;
+                    }
+                    else if (data[1] != 0.0) {
+                        col = 2;
+                    }
+                    else if (data[0] == 0.0) {
+                        continue;
+                    }
+
+                    if (obj.length() == 3) {
+                        _ss << "AS ";
+                    }
+                    else {
+                        _ss << "AR ";
+                    }
+                    _ss << setw(4) << left << obj << setw(1) << "";
+
+                    _ss << setw(26) << epoch.str("%Y %C %L %K %O %P")
+                        << setw(3) << right << col << setw(2) << "";
+
+                    for (int i = 0; i < col; i++) {
+                        _ss << setw(20) << right << setprecision(12) << scientific << uppercase << data[i];
+                    }
+
+                    _ss << endl;
+                }
+            }
+        }
+
+        int size = _fill_buffer(buff, sz);
+        _mutex.unlock();
+        return size;
+    }
+
+    t_gallprec* t_rinexc::_get_prec_data()
+    {
+        for (auto iter = _data.begin(); iter != _data.end(); iter++)
+        {
+            if (iter->second->id_type() == t_gdata::ALLPREC) {
+                return dynamic_cast<t_gallprec*>(iter->second);
+            }
+        }
+        return nullptr;
+    }
 
 } // namespace

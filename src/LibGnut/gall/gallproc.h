@@ -51,6 +51,7 @@ namespace great
 
         /** @brief add one process data. */
         void Add_Data(const string &type, t_gdata *data);
+        bool Add_Data(t_gdata* data);
 
         /** 
         * @brief get the data by type of t_gdata.

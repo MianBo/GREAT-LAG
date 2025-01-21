@@ -29,7 +29,7 @@
 // special buffer size for file reading
 // --> must be bellow gcoder maximum limit !
 #define FILEBUF_SIZE 20480
-#define FILEHDR_SIZE 48
+#define FILEHDR_SIZE 60
 
 using namespace std;
 
@@ -43,6 +43,7 @@ namespace gnut
     public:
         /** @brief default constructor. */
         t_gfile(t_spdlog spdlog);
+        t_gfile(t_glog glog);
 
         /** @brief default destructor. */
         virtual ~t_gfile();
@@ -70,6 +71,7 @@ namespace gnut
         /** @brief reset path. */
         virtual void reset();
 
+        virtual int init_write();
     protected:
 
         /** @brief read data.
@@ -106,6 +108,8 @@ namespace gnut
         bool _gzip;      ///< compressed
         t_giof *_file;   ///< ascii file
 
+        virtual int _gio_write(const char* buff, int size);
+        virtual int _write(const char* b, int s);// integrate gzip/ascii
     private:
     };
 

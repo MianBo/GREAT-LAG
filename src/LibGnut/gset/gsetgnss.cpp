@@ -38,12 +38,21 @@ namespace gnut
         _sigma_def[BDS] = t_gpair(5.0, 0.03);
         _sigma_def[QZS] = t_gpair(5.0, 0.03);
         _sigma_def[IRN] = t_gpair(5.0, 0.03);
+        _sigma_def[LEO] = t_gpair(5.0, 0.03);
         _sigma_def_doppler[GPS] = 0.04;
         _sigma_def_doppler[GLO] = 0.08;
         _sigma_def_doppler[GAL] = 0.06;
         _sigma_def_doppler[BDS] = 0.06;
         _sigma_def_doppler[QZS] = 0.06;
         _sigma_def_doppler[IRN] = 0.06;
+        _sigma_def_doppler[LEO] = 0.06;
+
+        _sigma_def_LEO[GPS] = t_gpair(15.0, 0.01);
+        _sigma_def_LEO[GLO] = t_gpair(15.0, 0.01);
+        _sigma_def_LEO[GAL] = t_gpair(15.0, 0.01); 
+        _sigma_def_LEO[BDS] = t_gpair(15.0, 0.01);
+        _sigma_def_LEO[QZS] = t_gpair(15.0, 0.01);
+        _sigma_def_LEO[IRN] = t_gpair(15.0, 0.01);
 
         _maxres_def[GPS] = t_gpair(10.0, 0.08);
         _maxres_def[GLO] = t_gpair(15.0, 0.08);
@@ -51,12 +60,14 @@ namespace gnut
         _maxres_def[BDS] = t_gpair(15.0, 0.08);
         _maxres_def[QZS] = t_gpair(15.0, 0.08);
         _maxres_def[IRN] = t_gpair(15.0, 0.08);
+        _maxres_def[LEO] = t_gpair(15.0, 0.08);
         _maxres_def_doppler[GPS] = 0.1;
         _maxres_def_doppler[GLO] = 0.1;
         _maxres_def_doppler[GAL] = 0.1;
         _maxres_def_doppler[BDS] = 0.1;
         _maxres_def_doppler[QZS] = 0.1;
         _maxres_def_doppler[IRN] = 0.1;
+        _maxres_def_doppler[LEO] = 0.1;
 
         t_map_gnss gnss_data = GNSS_DATA_PRIORITY();
         for (auto itGNSS = gnss_data.begin(); itGNSS != gnss_data.end(); ++itGNSS) 
@@ -435,7 +446,7 @@ namespace gnut
 
         if (v_tmp.empty())
         {
-            throw logic_error("You need set your band for " + t_gsys::gsys2str(gsys) + " in xml file");
+            //throw logic_error("You need set your band for " + t_gsys::gsys2str(gsys) + " in xml file");
 
             switch (gsys)
             {
@@ -458,6 +469,11 @@ namespace gnut
             case QZS:
                 v_tmp.push_back(BAND_1);
                 v_tmp.push_back(BAND_2);
+                break;
+            case LEO:
+                v_tmp.push_back(BAND_1);
+                v_tmp.push_back(BAND_2);
+                break;
             default:
                 break;
             }
@@ -503,6 +519,10 @@ namespace gnut
             case QZS:
                 v_tmp.push_back(FREQ_1);
                 v_tmp.push_back(FREQ_2);
+            case LEO:
+                v_tmp.push_back(FREQ_1);
+                v_tmp.push_back(FREQ_2);
+                break;
             default:
                 break;
             }
@@ -649,6 +669,50 @@ namespace gnut
 
         _gmutex.unlock();
         return;
+    }
+
+    double t_gsetgnss::sigC_simu(GSYS gsys)
+    {
+        _gmutex.lock();
+
+        double sig = 0.0;
+        string sys = _gsys(gsys);
+        sig = t_gsetbase::_dblatt(sys, "sigC_simu");
+
+        _gmutex.unlock(); return sig;
+    }
+
+    double t_gsetgnss::maxC_simu(GSYS gsys)
+    {
+        _gmutex.lock();
+
+        double max = 0.0;
+        string sys = _gsys(gsys);
+        max = t_gsetbase::_dblatt(sys, "maxC_simu");
+
+        _gmutex.unlock(); return max;
+    }
+
+    double t_gsetgnss::sigL_simu(GSYS gsys)
+    {
+        _gmutex.lock();
+
+        double sig = 0.0;
+        string sys = _gsys(gsys);
+        sig = t_gsetbase::_dblatt(sys, "sigL_simu");
+
+        _gmutex.unlock(); return sig;
+    }
+
+    double t_gsetgnss::maxL_simu(GSYS gsys)
+    {
+        _gmutex.lock();
+
+        double max = 0.0;
+        string sys = _gsys(gsys);
+        max = t_gsetbase::_dblatt(sys, "maxL_simu");
+
+        _gmutex.unlock(); return max;
     }
 
 } // namespace

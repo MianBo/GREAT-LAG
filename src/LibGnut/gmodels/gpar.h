@@ -78,7 +78,8 @@ namespace gnut
         GLO_IFPB,
         GAL_ISB,
         BDS_ISB,
-        QZS_ISB, ///< multi-GNSS
+        QZS_ISB, 
+        LEO_ISB,///< multi-GNSS
         P1P2G_REC,
         P1P2E_REC,
         P1P2R_REC,

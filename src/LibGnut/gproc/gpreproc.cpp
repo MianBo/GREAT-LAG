@@ -80,6 +80,8 @@ namespace gnut
         _sigPhase_QZS = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(QZS);
         _sigCode_IRN = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(IRN);
         _sigPhase_IRN = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(IRN);
+        _sigCode_LEO = dynamic_cast<t_gsetgnss*>(_set)->sigma_C(LEO);
+        _sigPhase_LEO = dynamic_cast<t_gsetgnss*>(_set)->sigma_L(LEO);
 
         set<string> rec_list = dynamic_cast<t_gsetgen *>(_set)->rec_all();
         for (auto rec : rec_list)

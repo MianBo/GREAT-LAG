@@ -45,12 +45,14 @@ namespace gnut
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::LEO);
 
         _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GPS);
         _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GAL);
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::LEO);
 
         if (_trpModStr == gnut::TROPMODEL::SAASTAMOINEN)
             _tropoModel = make_shared<t_saast>();
@@ -101,11 +103,14 @@ namespace gnut
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(_settings)->band_index(gnut::LEO);
+
         _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GPS);
         _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GAL);
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(_settings)->freq_index(gnut::LEO);
         if (_trpModStr == gnut::TROPMODEL::SAASTAMOINEN)
             _tropoModel = make_shared<t_saast>();
         else if (_trpModStr == gnut::TROPMODEL::DAVIS)
@@ -412,6 +417,16 @@ namespace gnut
         case QZS:
         {
             int i = param.getParam(_site, par_type::QZS_ISB, "");
+            if (i >= 0)
+            {
+                isb_offset = param[i].value();
+            }
+            break;
+        }
+        // LEO system time offset
+        case LEO:
+        {
+            int i = param.getParam(_site, par_type::LEO_ISB, "");
             if (i >= 0)
             {
                 isb_offset = param[i].value();

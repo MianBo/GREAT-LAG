@@ -202,17 +202,20 @@ namespace gnut
         _sig_init_gal = dynamic_cast<t_gsetproc *>(_set)->sig_init_gal();
         _sig_init_bds = dynamic_cast<t_gsetproc *>(_set)->sig_init_bds();
         _sig_init_qzs = dynamic_cast<t_gsetproc *>(_set)->sig_init_qzs();
+        _sig_init_leo = dynamic_cast<t_gsetproc*>(_set)->sig_init_leo();
 
         _sigCodeGPS = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(GPS);
         _sigCodeGLO = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(GLO);
         _sigCodeGAL = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(GAL);
         _sigCodeBDS = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(BDS);
         _sigCodeQZS = dynamic_cast<t_gsetgnss *>(_set)->sigma_C(QZS);
+        _sigCodeLEO = dynamic_cast<t_gsetgnss*>(_set)->sigma_C(LEO);
         _sigPhaseGPS = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(GPS);
         _sigPhaseGLO = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(GLO);
         _sigPhaseGAL = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(GAL);
         _sigPhaseBDS = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(BDS);
         _sigPhaseQZS = dynamic_cast<t_gsetgnss *>(_set)->sigma_L(QZS);
+        _sigPhaseLEO = dynamic_cast<t_gsetgnss*>(_set)->sigma_L(LEO);
         _sigDopplerGPS = dynamic_cast<t_gsetgnss *>(_set)->sigma_D(GPS);
         _sigDopplerGLO = dynamic_cast<t_gsetgnss *>(_set)->sigma_D(GLO);
         _sigDopplerGAL = dynamic_cast<t_gsetgnss *>(_set)->sigma_D(GAL);

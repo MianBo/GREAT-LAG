@@ -39,6 +39,8 @@
 #include "gset/gsetgnss.h"
 #include "gset/gsetgen.h"
 #include "gcoders/gcoder_buffer.h"
+#include "gio/glog.h"
+#include "spdlog/spdlog.h"
 
 #define BUFFER_INCREASE_FAC 1.5
 #define DEFAULT_BUFFER_SIZE 4096
@@ -173,6 +175,10 @@ namespace gnut
         /** @brief set close with warning. */
         void close_with_warning(const bool& b) { _close_with_warning = b; }
 
+
+        virtual int encode_head(char* buff, int sz, vector<string>& errmsg) { return 0; } // = 0;
+        virtual int encode_data(char* buff, int sz, int& cnt, vector<string>& errmsg) { return 0; } // = 0;
+        int _fill_buffer(char* buff, int sz);
     protected:
         /** @brief get endpos/size/buffer. */
         const int &endpos() const { return _endpos; }
@@ -273,6 +279,7 @@ namespace gnut
         int _irc;                     ///< IRC code
         bool _close_with_warning;     ///< close with warnings (desctructor)
 
+        t_glog* _log;                 // log pointer
         gcoder_char_buffer _decode_buffer;
 
         //    settings

@@ -155,6 +155,7 @@ namespace gnut
         double _sig_init_gal; ///< Initial Galileo ISB sigma.
         double _sig_init_bds; ///< Initial BeiDou ISB sigma.
         double _sig_init_qzs; ///< Initial QZSS ISB sigma.
+        double _sig_init_leo; ///< Initial LEO ISB sigma.
 
         // observations sigma
         double _sigCodeGPS;    ///< Code sigma.  - GPS
@@ -172,6 +173,9 @@ namespace gnut
         double _sigCodeQZS;    ///< Code sigma.  - QZSS
         double _sigPhaseQZS;   ///< Phase sigma. - QZSS
         double _sigDopplerQZS; ///< Doppler sigma. - QZSS
+        double _sigCodeLEO;    ///< Code sigma.  - LEO
+        double _sigPhaseLEO;   ///< Phase sigma. - LEO
+        double _sigDopplerLEO; ///< Doppler sigma. - LEO
 
         bool _pos_kin;    ///< pos kin
         bool _extern_log; ///< extern log

@@ -51,6 +51,14 @@ namespace gnut
             return IFMT::EOP_INP; // optinal for xml node
         if (tmp == "LEAPSECOND")
             return IFMT::LEAPSECOND_INP;
+        if (tmp == "IONEX")
+            return IFMT::IONEX_INP;
+        if (tmp == "RINEXC_SIMU")
+            return IFMT::RINEXCSIMU_INP;
+        if (tmp == "SP3_SIMU")
+            return IFMT::SP3SIMU_INP;
+        if (tmp == "TRPZTD")
+            return IFMT::TRPZTD_INP;
         if (tmp == "UPD")
             return IFMT::UPD_INP;
         if (tmp == "IFCB")

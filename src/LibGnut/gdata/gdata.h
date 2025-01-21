@@ -26,6 +26,7 @@
 #include "gio/gnote.h"
 #include "gutils/gcommon.h"
 #include "gio/grtlog.h"
+#include "gio/glog.h"
 using namespace std;
 
 namespace gnut
@@ -80,6 +81,7 @@ namespace gnut
             ALLPROD,     ///<   all PROD
             ALLBIAS,     ///<   all PROD
             ALLPOLEUT1,  ///<   poleut1
+            ALLATTITUDE, ///<   all attitude
             POS,         ///<   XYZT position/time
             CLK,         ///<   clocks
             IONEX,       ///<   ionospheric delay from tec grid products (GIM)
@@ -94,6 +96,8 @@ namespace gnut
             LEAPSECOND,  ///<   leap Second
             ALLPCVNEQ,   ///<   all PCV NEG
             RSSIMAP,     ///<   rssi map
+            ALLTRPZTD,   ///<   all TRPZTD
+            ION,         ///< = xx, ionospheric parameters
             LAST         ///<   last
         };
 
@@ -111,10 +115,10 @@ namespace gnut
 
         /** @brief set glog pointer */
         void spdlog(t_spdlog spdlog);
-
+        void glog(t_glog* l) { _log = l; }
         /** @brief get glog pointer */
         t_spdlog spdlog() const { return _spdlog; }
-
+        t_glog* glog()const { return _log; }
         /** @brief set gnote pointer */
         void gnote(t_gallnote *n) { _gnote = n; }
 
@@ -159,6 +163,7 @@ namespace gnut
         ID_TYPE _type;            ///< type_ID
         ID_GROUP _group;          ///< group_ID
         t_spdlog _spdlog;         ///< spdlog pointer
+        t_glog* _log;             ///< log pointer
     private:
     };
 }

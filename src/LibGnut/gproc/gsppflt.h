@@ -121,6 +121,7 @@ namespace gnut
         t_randomwalk *_galStoModel; ///< gal stochastic model
         t_randomwalk *_bdsStoModel; ///< bds stochastic model
         t_randomwalk *_qzsStoModel; ///< qzs stochastic model
+        t_randomwalk* _leoStoModel; ///< leo stochastic model
         t_whitenoise *_clkStoModel; ///< clk stochastic model
         t_whitenoise *_crdStoModel; ///< crd stochastic model
 

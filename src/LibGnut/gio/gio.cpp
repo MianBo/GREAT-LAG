@@ -188,4 +188,50 @@ namespace gnut
         return _running;
     }
 
+
+    // start reading (could be run in a separate thread)
+    // ---------
+    void t_gio::run_write()
+    {
+        _gmutex.lock();
+
+        if (_coder) { _coder->clear(); } // be sure always clean decoder
+
+        vector<string>  errmsg;
+        _stop = 0;
+
+        char* loc_buff = new char[_size];
+
+        if (_opened != 1 && init_write() < 0) {
+            _stop_common();
+            delete[] loc_buff;
+            _gmutex.unlock(); return;
+        }
+
+        int nbytes = 0;
+        _running = 1;
+        do {
+            nbytes = 0;
+
+            // 1. try to read from local file source
+            nbytes = _locf_read(loc_buff, _size);
+
+            // 2. try reading in a loop
+       //    while( nbytes < 0 ){
+       //       nbytes = _locf_read(loc_buff,_size);
+       //     }
+
+            // 3. read from encoder
+            if (nbytes < 0 && _coder) {
+                nbytes = _coder->encode_data(loc_buff, _size, _count, errmsg);
+            }
+
+        } while (_stop == 0 && (_gio_write(loc_buff, nbytes) > 0 || nbytes < -1));
+
+        _stop_common();
+        delete[] loc_buff;
+        _gmutex.unlock(); return;
+    }
+
+
 } // namespace

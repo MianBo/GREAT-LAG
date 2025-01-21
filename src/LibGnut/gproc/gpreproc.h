@@ -79,6 +79,8 @@ namespace gnut
         double _sigPhase_QZS; ///< sigma of QZS phase observation
         double _sigCode_IRN;  ///< sigma of IRN code observation
         double _sigPhase_IRN; ///< sigma of IRN phase observation
+        double _sigCode_LEO;  ///< sigma of LEO code observation
+        double _sigPhase_LEO; ///< sigma of LEO phase observation
         double _sumS;         ///< sumS
         double _scl;          ///< scl
         t_gtriple _pos;       ///< position

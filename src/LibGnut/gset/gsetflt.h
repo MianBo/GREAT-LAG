@@ -107,6 +107,12 @@ namespace gnut
         double rndwk_bds();
 
         /**
+         * @brief get the random walk of LEO in flt
+         * @return double : the random walk of LEO in flt
+         */
+        double rndwk_leo();
+
+        /**
          * @brief get the random walk of amb in flt
          * @return double : the random walk of amb in flt
          */
@@ -169,7 +175,8 @@ namespace gnut
         double _rndwk_glo;  ///< random walk process for GLONASS system time offset
         double _rndwk_gal;  ///< random walk process for Galileo system time offset
         double _rndwk_bds;  ///< random walk process for BeiDou system time offset
-        double _rndwk_qzs;  ///< random walk process for ZQSS system time offset
+        double _rndwk_qzs;  ///< random walk process for QZSS system time offset
+        double _rndwk_leo;  ///< random walk process for LEO system time offset
         double _rndwk_ztd;  ///< random walk process for ZTD [mm/sqrt(hour)]
         double _rndwk_vion; ///< random walk process for VION [mm/sqrt(hour)]
         double _noise_vion; ///< white noise process for VION [m]

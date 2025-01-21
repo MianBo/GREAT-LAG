@@ -311,4 +311,42 @@ namespace gnut
         return false;
     }
 
+    // remove specific data structure from the coder
+    // ----------
+    int t_gcoder::_fill_buffer(char* buff, int sz)
+    {
+        _ss.seekg(0, _ss.end);
+        long len = (long)_ss.tellg();
+        len = len - _ss_position;
+        _ss.seekg(_ss_position, ios_base::beg);
+
+        int size = (len < sz) ? len : sz;
+
+        _ss.clear();
+        _ss.read(buff, size);
+
+        string tmp = buff;
+        tmp = tmp.substr(0, size);
+        size_t ifirst = 0;
+        if ((ifirst = tmp.find_last_of(crlf)) != string::npos) {
+            tmp = tmp.substr(0, ifirst + 1);
+            size = tmp.size();
+            _ss.seekg(_ss_position + size, ios_base::beg);
+        }
+
+        if (_ss.fail()) {
+            cout << "HEAD: any problem ?\n";
+
+        }
+        else if (_ss.gcount() == 0) {
+            _ss_position = 0;
+            _ss.str("");
+            _ss.clear();
+        }
+        else {
+            _ss_position += size; // _ss.gcount();
+        }
+
+        return size;
+    }
 } 

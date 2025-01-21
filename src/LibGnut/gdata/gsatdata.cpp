@@ -32,6 +32,7 @@ namespace gnut
         id_type(t_gdata::SATDATA);
         id_group(t_gdata::GRP_OBSERV);
     }
+
     t_gsatdata::t_gsatdata(t_spdlog spdlog) : t_gobsgnss(spdlog)
     {
         id_type(t_gdata::SATDATA);
@@ -493,11 +494,14 @@ namespace gnut
         double dclk = 0.0;
         double clkrms = 0.0;
 
+        // PRN numbers starting with 2, 3, 4, 5, 6, L and GNSS
         if (satname.substr(0, 1) != "G" &&
             satname.substr(0, 1) != "R" &&
             satname.substr(0, 1) != "E" &&
             satname.substr(0, 1) != "J" &&
-            satname.substr(0, 1) != "C")
+            satname.substr(0, 1) != "C" &&
+            satname.substr(0, 1) != "L" &&
+            satname.substr(0, 1) != "2" && satname.substr(0, 1) != "3" && satname.substr(0, 1) != "4"&& satname.substr(0, 1) != "5"&& satname.substr(0, 1) != "6")
         {
             if (_spdlog)
                 SPDLOG_LOGGER_DEBUG(_spdlog, " satelite " + satname + _epoch.str_ymdhms(" Undefined satellite system! "));

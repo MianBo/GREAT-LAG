@@ -40,6 +40,8 @@ namespace gnut
             return PPP_OUT;
         if (tmp == "FLT")
             return FLT_OUT;
+        if (tmp == "RINEXO")
+            return RINEXO_OUT;
         return OFMT(-1);
     }
 
@@ -55,6 +57,8 @@ namespace gnut
             return "PPP";
         case FLT_OUT:
             return "FLT";
+        case RINEXO_OUT:
+            return "RINEXO";
         default:
             return "UNDEF";
         }
