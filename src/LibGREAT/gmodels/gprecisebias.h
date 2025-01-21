@@ -23,6 +23,7 @@
 #include "gdata/gnavde.h"
 #include "gdata/gifcb.h"
 #include "gall/gallopl.h"
+#include "gutils/gscf2crsleo.h"
 
 namespace great
 {
@@ -169,6 +170,15 @@ namespace great
         */
         void _update_rot_matrix(const t_gtime &epoch);
 
+        /**
+        * @brief update rotmatrix for leo sat
+        * @param[in] leosat satname of leo sat
+        * @param[in] epoch specified epoch
+        * @param[in] pos coord of leo sat
+        * @param[in] vel veloctiy of leo sat
+        */
+        void update_rotmat_scf(string leosat, const t_gtime& epoch, const ColumnVector& pos, const ColumnVector& vel);
+
         /** @brief get crs sat crd */
         /**
         * @brief get crs sat crd
@@ -246,14 +256,22 @@ namespace great
         shared_ptr<t_gtide> _tide;  ///< tide correction model
 
         t_gpoleut1 *_gdata_erp = nullptr; ///< all poleut1 data
+        //t_gion* _gdata_ion = nullptr;      ///< all ion data for simu
+        //t_galltrp* _gall_trp = nullptr;     ///< all trp data for simu
         t_gnavde *_gdata_navde = nullptr; ///< all panetnav info
         t_gallnav *_gall_nav = nullptr;   ///< all nav data include rinexn,sp3,clk
         t_gallobj *_gallobj = nullptr;    ///< all obj
+        //t_gallatt* _gall_att = nullptr;	      ///< all attitude data for leo sat
         t_gallopl *_opl = nullptr;        ///< opl
         modeofmeanpole _mean_pole_model = modeofmeanpole::cubic;
 
         map<t_gtime, shared_ptr<t_gtrs2crs>> _trs2crs_list;///< trs2crs list
         shared_ptr<t_gtrs2crs> _trs2crs_2000; ///< trs2crs matrix
+
+        t_gscf2crsleo _scf2crs_leo;	  ///< ant2crs matrix for leo sat
+
+        Matrix _rot_scf2crs_leo;		///< record scf2crs matrix
+        Matrix _rot_scf2trs_leo;		///< record scf2trs matrix
         double _minElev;                      ///< min ele for prepare
 
         Matrix _rot_scf2crs; ///< record scf2crs matrix

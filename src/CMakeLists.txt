@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 
 #Project name and version number
-project(GREAT-PVT VERSION 0.1.0)
+project(GREAT-LAG VERSION 0.1.0)
 
 #information message
 message(STATUS " ====================================================================================================================== ")
@@ -20,7 +20,7 @@ message(STATUS " ===============================================================
 message(STATUS " The GREAT (GNSS+ Research, Application and Teaching) software is designed and developed at Wuhan University for        ")
 message(STATUS " scientific and engineering application and teaching in geodesy and navigation fields.                                     ")
 message(STATUS "                                                                                                                        ")
-message(STATUS " It is written in standard C++. GREAT-PVT supports multi-frequency multi-system PPP and RTK filtering solutions.        ")
+message(STATUS " It is written in standard C++. GREAT-LAG supports observation simulation and LEO satellite Augmentation GNSS.        ")
 
 message(STATUS " ====================================================================================================================== ")
 

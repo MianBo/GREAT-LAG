@@ -20,7 +20,8 @@
 #include "gmodels/gcombmodel.h"
 #include "gproc/gpreproc.h"
 #include "gproc/gfltmatrix.h"
-
+#include "gcoders/rinexc.h"
+#include "gio/gfile.h"
 using namespace gsins;
 
 namespace great
@@ -372,6 +373,9 @@ namespace great
         int _realnobs;                    ///< number of obs
         RECEIVERTYPE _receiverType;       ///< receiver Type
         map<string, string> _sat_freqs;   ///< sat freqs
+
+        map<string, map<t_gtime, double>> _estimated_clk;
+        ofstream all_par_file;
     };
 
 }

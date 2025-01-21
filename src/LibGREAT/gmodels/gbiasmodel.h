@@ -102,6 +102,14 @@ namespace great
         string _crt_rec; ///< current reciever
         GSYS _crt_sys;   ///< current system
 
+        /** @brief omc RAW_ALL observation
+        *
+        *param[in] crt_epo            current epoch
+        *param[in] obsdata            observation data
+        *param[in] pars                parameter
+        *param[in] omc                omc
+        */
+        bool _omc_obs_ALL(const t_gtime& crt_epo, t_gsatdata& obsdata, t_gallpar& pars, t_gobs& gobs, double& omc);
     protected:
         /** @brief calculate distance of models
         *
@@ -124,15 +132,6 @@ namespace great
         *param[in] wgt                weight
         */
         bool _wgt_obs_ALL(const t_gdata::ID_TYPE &type, t_gobs &gobs1, t_gsatdata &obsdata, const double &factorP, double &wgt);
-
-        /** @brief omc RAW_ALL observation
-        *
-        *param[in] crt_epo            current epoch
-        *param[in] obsdata            observation data
-        *param[in] pars                parameter
-        *param[in] omc                omc
-        */
-        bool _omc_obs_ALL(const t_gtime &crt_epo, t_gsatdata &obsdata, t_gallpar &pars, t_gobs &gobs, double &omc);
 
         /** @brief calculate basic partial
         *
@@ -178,12 +177,14 @@ namespace great
         double _sigCodeGAL;    ///< code bias of GAL
         double _sigCodeBDS;    ///< code bias of BDS
         double _sigCodeQZS;    ///< code bias of QZS
+        double _sigCodeLEO;    ///< code bias of LEO
 
         double _sigPhaseGPS;    ///< phase bias of GPS
         double _sigPhaseGLO;    ///< phase bias of GLO
         double _sigPhaseGAL;    ///< phase bias of GAL
         double _sigPhaseBDS;    ///< phase bias of BDS
         double _sigPhaseQZS;    ///< phase bias of QZS
+        double _sigPhaseLEO;    ///< phase bias of LEO
 
         map<GSYS, map<FREQ_SEQ, GOBSBAND>> _band_index; ///< index of band
         map<GSYS, map<GOBSBAND, FREQ_SEQ>> _freq_index; ///< index of frequency

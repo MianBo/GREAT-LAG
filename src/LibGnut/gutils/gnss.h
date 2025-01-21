@@ -43,6 +43,7 @@ namespace gnut
         QZS = 5,
         SBS = 6,
         IRN = 7,
+        LEO = 8,
         GNS = 999
     };
 
@@ -92,6 +93,9 @@ namespace gnut
         S01 = 80,
         S05 = 81, // SBAS
         I05 = 90, // I09,                // IRNSS
+
+        L01 = 100, L02 = 101,
+        X01 = 102, X02 = 103,//LEO
         LAST_GFRQ = 999
     };
 
@@ -154,18 +158,19 @@ namespace gnut
         ATTR_B = 2,
         ATTR_C = 3,
         ATTR_D = 4,
-        ATTR_I = 5,
-        ATTR_L = 6,
-        ATTR_M = 7,
-        ATTR_N = 8,
-        ATTR_P = 9,
-        ATTR_Q = 10,
-        ATTR_S = 11,
-        ATTR_W = 12,
-        ATTR_X = 13,
-        ATTR_Y = 14,
-        ATTR_Z = 15,
-        ATTR_NULL = 16, // " " 2CHAR code
+        ATTR_F = 5,
+        ATTR_I = 6,
+        ATTR_L = 7,
+        ATTR_M = 8,
+        ATTR_N = 9,
+        ATTR_P = 10,
+        ATTR_Q = 11,
+        ATTR_S = 12,
+        ATTR_W = 13,
+        ATTR_X = 14,
+        ATTR_Y = 15,
+        ATTR_Z = 16,
+        ATTR_NULL = 17, // " " 2CHAR code
         ATTR = 999 // ""  UNKNOWN
     };
 
@@ -459,6 +464,11 @@ namespace gnut
         SC,
         SD,
 
+        C1F,
+        C2F,
+        L1F,
+        L2F,
+
         X = 9999 // LAST_GOBS
     };
 
@@ -547,6 +557,7 @@ namespace gnut
         {BDS, {LAST_GFRQ, C02, C07, C06, C05, C09, C08, C01}},
         {QZS, {LAST_GFRQ, J01, J02, J05, J06}},
         {SBS, {LAST_GFRQ, S01, S05}},
+        {LEO, {LAST_GFRQ, L01, L02}},
         {GNS, {}},
     }; // static map of default GNSS freq priorities
 
@@ -559,6 +570,7 @@ namespace gnut
         {BDS, {BAND, BAND_2, BAND_7, BAND_6, BAND_5, BAND_9, BAND_8, BAND_1}},
         {QZS, {BAND, BAND_1, BAND_2, BAND_5, BAND_6}},
         {SBS, {BAND, BAND_1, BAND_5}},
+        {LEO, {BAND, BAND_1, BAND_2}},
         {GNS, {}},
     }; // static map of default GNSS band priorities
 

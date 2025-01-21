@@ -26,6 +26,7 @@ namespace great
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(settings)->band_index(gnut::LEO);
     }
 
     t_gbds_codebias_cor::t_gbds_codebias_cor(t_gsetbase *settings)
@@ -53,6 +54,7 @@ namespace great
         _band_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::GAL);
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::GLO);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(settings)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(settings)->band_index(gnut::LEO);
 
         // set Wanninger & Beer
         _IGSO_MEO_Corr[BAND_2]["IGSO"] = {{0, -0.55}, {1, -0.40}, {2, -0.34}, {3, -0.23}, {4, -0.15}, {5, -0.04}, {6, 0.09}, {7, 0.19}, {8, 0.27}, {9, 0.35}}; // B1
@@ -261,6 +263,7 @@ namespace great
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(settings)->freq_index(gnut::LEO);
 
         _single_mix = {gnut::OBSCOMBIN::RAW_MIX};
     }
@@ -293,6 +296,7 @@ namespace great
         _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::GLO);
         _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::BDS);
         _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::QZS);
+        _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(settings)->freq_index(gnut::LEO);
 
         _single_mix = {gnut::OBSCOMBIN::RAW_MIX};
     }

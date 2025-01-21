@@ -21,11 +21,11 @@
 
 namespace great
 {
-    t_gprecisebias::t_gprecisebias(t_gallproc *data, t_gsetbase *setting) : t_gbiasmodel(setting)
+    t_gprecisebias::t_gprecisebias(t_gallproc *data, t_gsetbase *setting) : t_gbiasmodel(setting) 
     {
         _gall_nav = dynamic_cast<t_gallnav *>((*data)[t_gdata::GRP_EPHEM]);
         _gallobj = dynamic_cast<t_gallobj *>((*data)[t_gdata::ALLOBJ]);
-        _gdata_erp = dynamic_cast<t_gpoleut1 *>((*data)[t_gdata::ALLPOLEUT1]);
+        _gdata_erp = dynamic_cast<t_gpoleut1 *>((*data)[t_gdata::ALLPOLEUT1]);     
         _gdata_navde = dynamic_cast<t_gnavde *>((*data)[t_gdata::ALLDE]);
         _tide = shared_ptr<t_gtide>(new t_gtideIERS(dynamic_cast<t_gallotl *>((*data)[t_gdata::ALLOTL])));
         _minElev = dynamic_cast<t_gsetproc *>(setting)->minimum_elev();
@@ -42,6 +42,7 @@ namespace great
         _attitudes = dynamic_cast<t_gsetproc *>(setting)->attitudes();
         _opl = dynamic_cast<t_gallopl *>((*data)[t_gdata::ALLOPL]);
         _mean_pole_model = dynamic_cast<t_gsetproc *>(setting)->mean_pole_model();
+        _scf2crs_leo = t_gscf2crsleo("");
     }
 
     t_gprecisebias::t_gprecisebias(t_gallproc *data, t_spdlog spdlog, t_gsetbase *setting) : t_gbiasmodel(spdlog, setting)
@@ -49,22 +50,25 @@ namespace great
         _gall_nav = dynamic_cast<t_gallnav *>((*data)[t_gdata::GRP_EPHEM]);
         _gallobj = dynamic_cast<t_gallobj *>((*data)[t_gdata::ALLOBJ]);
         _gdata_erp = dynamic_cast<t_gpoleut1 *>((*data)[t_gdata::ALLPOLEUT1]);
+        _gall_trp = dynamic_cast<t_galltrp*>((*data)[t_gdata::ALLTRPZTD]);
         _gdata_navde = dynamic_cast<t_gnavde *>((*data)[t_gdata::ALLDE]);
+        _gall_att = dynamic_cast<t_gallatt*>((*data)[t_gdata::ALLATTITUDE]);
         _tide = shared_ptr<t_gtide>(new t_gtideIERS(spdlog, dynamic_cast<t_gallotl *>((*data)[t_gdata::ALLOTL])));
         _minElev = dynamic_cast<t_gsetproc *>(setting)->minimum_elev();
         _crd_est = dynamic_cast<t_gsetproc *>(setting)->crd_est();
         _is_flt = (dynamic_cast<t_gsetgen *>(setting)->estimator() == "FLT");
         _trop_est = dynamic_cast<t_gsetproc *>(setting)->tropo();
+        //_isTrpSimu = dynamic_cast<t_gsetsimu*>(setting)->zwd();
         if (dynamic_cast<t_gallprec *>(_gall_nav))
         {
-            _corrt_sat_pcv = !(dynamic_cast<t_gsetinp *>(_gset)->input_size("sp3") == 0);
-            if (dynamic_cast<t_gsetinp *>(_gset)->input_size("orbit") != 0)
+            if (dynamic_cast<t_gsetinp *>(_gset)->input_size("orbit") != 0 || dynamic_cast<t_gsetinp*>(_gset)->input_size("sp3_simu") != 0 ||dynamic_cast<t_gsetinp*>(_gset)->input_size("sp3") != 0)
                 _corrt_sat_pcv = true;
         }
         _gifcb = dynamic_cast<t_gifcb *>((*data)[t_gdata::IFCB]);
         _attitudes = dynamic_cast<t_gsetproc *>(setting)->attitudes();
         _opl = dynamic_cast<t_gallopl *>((*data)[t_gdata::ALLOPL]);
         _mean_pole_model = dynamic_cast<t_gsetproc *>(setting)->mean_pole_model();
+        _scf2crs_leo = t_gscf2crsleo("");
     }
 
     t_gprecisebias::~t_gprecisebias()
@@ -91,7 +95,6 @@ namespace great
 
     double t_gprecisebias::tropoDelay(t_gtime &epoch, string &rec, t_gallpar &param, t_gtriple site_ell, t_gsatdata &satdata)
     {
-
         if (site_ell[2] > 1E4)
         {
             return 0.0;
@@ -161,11 +164,21 @@ namespace great
             else
                 return 0.0;
 
+            /*for simu ztd form post product*/
+            if (_gall_trp != nullptr)
+            {
+                if (i >= 0)
+                {
+                    zwd = param[i].value();
+                    delay = mfw * (zwd-zhd) + zhd * mfh;
+                    return delay;
+                }
+            }
+
             satdata.addmfH(mfh);
             satdata.addmfW(mfw);
 
             delay = mfh * zhd + mfw * zwd;
-
             if (!_trop_est && satdata.obsWithCorr())
             {
                 delay = mfh * zhd;
@@ -308,6 +321,15 @@ namespace great
             }
             break;
         }
+        case LEO:
+        {
+            int i = param.getParam(_crt_rec, par_type::LEO_ISB, "");
+            if (i >= 0)
+            {
+                isb_offset = param[i].value();
+            }
+            break;
+        }
         default:
             throw logic_error("can not support such sys ： " + t_gsys::gsys2str(gsys));
         }
@@ -402,6 +424,10 @@ namespace great
             break;
         }
         case GLO:
+        {
+            break;
+        }
+        case LEO:
         {
             break;
         }
@@ -519,13 +545,21 @@ namespace great
                     if (sat_pcv != 0)
                         antype = sat_pcv->anten();
                 }
-
-                if (_attitudes == ATTITUDES::YAW_NOMI)
-                    _gattitude_model.attitude(satdata, "", i, j, k); //nominal modeling
-                else if (_attitudes == ATTITUDES::YAW_RTCM)
-                    _gattitude_model.attitude(satdata, satdata.yaw(), i, j, k); //value from RTCM used
-                else
-                    _gattitude_model.attitude(satdata, antype, i, j, k); //default
+                if (satdata.gsys() == gnut::LEO)
+                {
+                    update_rotmat_scf(satdata.sat(), epoch, _crs_sat_crd.crd_cvect(), _crs_sat_vel.crd_cvect());
+                    i(0) = _rot_scf2trs_leo(1, 2); i(1) = _rot_scf2trs_leo(2, 2); i(2) = _rot_scf2trs_leo(3, 2);
+                    j(0) = _rot_scf2trs_leo(1, 1); j(1) = _rot_scf2trs_leo(2, 1); j(2) = _rot_scf2trs_leo(3, 1);
+                    k(0) = _rot_scf2trs_leo(1, 3); k(1) = _rot_scf2trs_leo(2, 3); k(2) = _rot_scf2trs_leo(3, 3);
+                }
+                else{
+                    if (_attitudes == ATTITUDES::YAW_NOMI)
+                        _gattitude_model.attitude(satdata, "", i, j, k); //nominal modeling
+                    else if (_attitudes == ATTITUDES::YAW_RTCM)
+                        _gattitude_model.attitude(satdata, satdata.yaw(), i, j, k); //value from RTCM used
+                    else
+                        _gattitude_model.attitude(satdata, antype, i, j, k); //default
+                }
 
                 if (antype.find("BLOCK IIR") != string::npos)
                 {
@@ -618,12 +652,21 @@ namespace great
                 string antenna = sat_pcv->anten();
                 t_gtriple dx(0, 0, 0);
                 Eigen::Vector3d i, j, k;
-                if (_attitudes == ATTITUDES::YAW_NOMI)
-                    _gattitude_model.attitude(satdata, "", i, j, k); //nominal modeling
-                else if (_attitudes == ATTITUDES::YAW_RTCM)
-                    _gattitude_model.attitude(satdata, satdata.yaw(), i, j, k); //value from RTCM used
-                else
-                    _gattitude_model.attitude(satdata, antenna, i, j, k); //default
+                if (satdata.gsys() == gnut::LEO)
+                {
+                    update_rotmat_scf(satdata.sat(), epoch, _crs_sat_crd.crd_cvect(), _crs_sat_vel.crd_cvect());
+                    i(0) = _rot_scf2trs_leo(1, 2); i(1) = _rot_scf2trs_leo(2, 2); i(2) = _rot_scf2trs_leo(3, 2);
+                    j(0) = _rot_scf2trs_leo(1, 1); j(1) = _rot_scf2trs_leo(2, 1); j(2) = _rot_scf2trs_leo(3, 1);
+                    k(0) = _rot_scf2trs_leo(1, 3); k(1) = _rot_scf2trs_leo(2, 3); k(2) = _rot_scf2trs_leo(3, 3);
+                }
+                else {
+                    if (_attitudes == ATTITUDES::YAW_NOMI)
+                        _gattitude_model.attitude(satdata, "", i, j, k); //nominal modeling
+                    else if (_attitudes == ATTITUDES::YAW_RTCM)
+                        _gattitude_model.attitude(satdata, satdata.yaw(), i, j, k); //value from RTCM used
+                    else
+                        _gattitude_model.attitude(satdata, antenna, i, j, k); //default
+                }
                 dx[0] = pco[0] * i(0) + pco[1] * j(0) + pco[2] * k(0);
                 dx[1] = pco[0] * i(1) + pco[1] * j(1) + pco[2] * k(1);
                 dx[2] = pco[0] * i(2) + pco[1] * j(2) + pco[2] * k(2);
@@ -677,12 +720,22 @@ namespace great
             string antenna = (sat_pcv)->anten();
             t_gtriple dx(0, 0, 0);
             Eigen::Vector3d i, j, k;
-            if (_attitudes == ATTITUDES::YAW_NOMI)
-                _gattitude_model.attitude(obsdata, "", i, j, k); 
-            else if (_attitudes == ATTITUDES::YAW_RTCM)
-                _gattitude_model.attitude(obsdata, obsdata.yaw(), i, j, k); 
-            else
-                _gattitude_model.attitude(obsdata, antenna, i, j, k); 
+            if (obsdata.gsys() == gnut::LEO)
+            {
+                update_rotmat_scf(obsdata.sat(), receive_epoch, _crs_sat_crd.crd_cvect(), _crs_sat_vel.crd_cvect());
+                i(0) = _rot_scf2trs_leo(1, 2); i(1) = _rot_scf2trs_leo(2, 2); i(2) = _rot_scf2trs_leo(3, 2);
+                j(0) = _rot_scf2trs_leo(1, 1); j(1) = _rot_scf2trs_leo(2, 1); j(2) = _rot_scf2trs_leo(3, 1);
+                k(0) = _rot_scf2trs_leo(1, 3); k(1) = _rot_scf2trs_leo(2, 3); k(2) = _rot_scf2trs_leo(3, 3);
+            }
+            else {
+                if (_attitudes == ATTITUDES::YAW_NOMI)
+                    _gattitude_model.attitude(obsdata, "", i, j, k);
+                else if (_attitudes == ATTITUDES::YAW_RTCM)
+                    _gattitude_model.attitude(obsdata, obsdata.yaw(), i, j, k);
+                else
+                    _gattitude_model.attitude(obsdata, antenna, i, j, k);
+            }	//default
+            
             rotmatrix.Column(1) << i.data();
             rotmatrix.Column(2) << j.data();
             rotmatrix.Column(3) << k.data();
@@ -749,6 +802,38 @@ namespace great
         return;
     }
 
+    void t_gprecisebias::update_rotmat_scf(string leosat, const t_gtime& epoch, const ColumnVector& pos, const ColumnVector& vel)
+    {
+        string leoname = leosat;
+        _update_rot_matrix(epoch);
+        Matrix rot_trs2crs = _trs2crs_2000->getRotMat();
+
+        if (_scf2crs_leo.getSatName() == "")
+        {
+            _scf2crs_leo = t_gscf2crsleo(leoname);
+        }
+
+        if (leoname != _scf2crs_leo.getSatName())
+        {
+            _scf2crs_leo = t_gscf2crsleo(leoname);
+        }
+
+        if (epoch != _scf2crs_leo.getCurtEpoch())
+        {
+            if (_gall_att != nullptr)
+            {
+                //_scf2crs_leo.calcRotMat(epoch, _gall_att->attitude(leoname), pos, vel, rot_trs2crs, _rot_scf2crs_leo);
+
+            }
+            else
+            {
+                _scf2crs_leo.calcRotMat(epoch, NULL, pos, vel, rot_trs2crs, _rot_scf2crs_leo);
+
+            }
+            _rot_scf2trs_leo = rot_trs2crs.t() * _rot_scf2crs_leo;
+        }
+        return;
+    }
 
     bool t_gprecisebias::_apply_rec(const t_gtime &crt_epo, const t_gtime &rec_epo, t_gallpar &pars)
     {

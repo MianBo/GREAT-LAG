@@ -80,12 +80,14 @@ namespace great
         double _sigCodeGAL;    ///< code bias of GAL
         double _sigCodeBDS;    ///< code bias of BDS
         double _sigCodeQZS;    ///< code bias of QZS
+        double _sigCodeLEO;    ///< code bias of LEO
 
         double _sigPhaseGPS;    ///< phase bias of GPS
         double _sigPhaseGLO;    ///< phase bias of GLO
         double _sigPhaseGAL;    ///< phase bias of GAL
         double _sigPhaseBDS;    ///< phase bias of BDS
         double _sigPhaseQZS;    ///< phase bias of QZS
+        double _sigPhaseLEO;    ///< phase bias of LEO
     };
     class LibGREAT_LIBRARY_EXPORT t_gcombIF : virtual public t_gcombmodel
     {

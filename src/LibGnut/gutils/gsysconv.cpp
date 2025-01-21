@@ -388,6 +388,23 @@ namespace gnut
         return 1;
     }
 
+    int ell2ipp(t_gsatdata& satdata, t_gtriple& ell_site, double radius, double ion_hgt, t_gtriple& ell_ipp)
+    {
+
+        double ippE = acos((radius / (radius + ion_hgt)) * cos(satdata.ele()));
+        double eps = ippE - satdata.ele();
+        double ipp_lat = ell_site[0] + eps * cos(satdata.azi());
+        if (fabs(ipp_lat * R2D) > 80) return -1;
+        double ipp_lon = ell_site[1] + eps * sin(satdata.azi()) / cos(ipp_lat);
+        if (ipp_lon < 0) ipp_lon += 2.0 * G_PI;
+        if (ipp_lon > 2.0 * G_PI) ipp_lon -= 2.0 * G_PI;
+
+        ell_ipp[0] = ipp_lat;
+        ell_ipp[1] = ipp_lon;
+
+        return 1;
+    }
+
     Matrix rotm(double angle, int type)
     {
         Matrix R(0.0, 3, 3);

@@ -173,7 +173,7 @@ namespace great
 
         // pcv correction
         double pcv = PCV(_corrt_sat_pcv, _corrt_rec_pcv, epoch, _crt_sat_epo, _trs_rec_crd, gsatdata, gobs);
-            
+        
         return gsatdata.rho() +
                clkRec -
                gsatdata.clk() +
@@ -212,7 +212,7 @@ namespace great
         if (!apply_sat_valid)
         {
             if (_spdlog)
-                SPDLOG_LOGGER_ERROR(_spdlog, "can not apply sat in " + crt_epo.str_ymdhms());
+                SPDLOG_LOGGER_ERROR(_spdlog, "can not apply sat ",_crt_sat , " in " + crt_epo.str_ymdhms());
             return false;
         }
         _crt_obs.addsatTime(_crt_sat_epo);

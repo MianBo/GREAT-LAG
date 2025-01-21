@@ -425,6 +425,8 @@ namespace gnut
             return "QZS";
         case IRN:
             return "IRN";
+        case LEO:
+            return "LEO";
         case GNS:
             return "GNS";
 
@@ -457,6 +459,8 @@ namespace gnut
             return 'J';
         case IRN:
             return 'I';
+        case LEO: 
+            return 'L';
         case GNS:
             return 'X';
 
@@ -503,6 +507,8 @@ namespace gnut
             return "J";
         else if (s == "I" || s == "IRN" || s == "IRNSS")
             return "I";
+        else if (s == "L" || s == "LEO") 
+            return "L";
         else
         {
             cout << "*** warning: not defined GNSS system code [" << s[0] << "]\n";
@@ -527,8 +533,6 @@ namespace gnut
 
         if (s == "G" || s == "GPS" || s == "NAVSTAR")
             return GPS;
-        else if (s.substr(0, 1) == "2" || s.substr(0, 1) == "3" || s.substr(0, 1) == "4" || s.substr(0, 1) == "5")
-            return GPS; 
         else if (s == "R" || s == "GLO" || s == "GLONASS")
             return GLO;
         else if (s == "E" || s == "GAL" || s == "GALILEO")
@@ -547,6 +551,8 @@ namespace gnut
             return QZS;
         else if (s == "I" || s == "IRN" || s == "IRNSS")
             return IRN;
+        else if (s == "L" || s == "LEO" || s[0] < 'A')
+            return LEO;
         else if (s == "X" || s == "GNS" || s == "GNSS")
             return GNS;
         else if (s == "M")
@@ -593,6 +599,10 @@ namespace gnut
             return QZS;
         else if (c == 'I')
             return IRN;
+        else if (c == 'L')
+            return LEO;
+        else if (c < 'A')
+            return LEO;
         else if (c == 'M')
             return GNS;
         else if (c == 'X')
@@ -657,6 +667,9 @@ namespace gnut
         case IRN:
             chr = 'I';
             break;
+        case LEO:
+            chr = 'L'; 
+            break;
         case GNS:
             chr = 'X';
             break;
@@ -679,6 +692,54 @@ namespace gnut
 
         string tmp_svn(tmp);
         return tmp_svn;
+    }
+
+    string t_gsys::eval_sat_addleo(string sat, GSYS sys)
+    {
+        istringstream is(sat); // .substr(0,3) NE!
+        GSYS gnss = sys;
+        int  svn = 0;
+        char chr = 'G';        // if empty, use GPS
+        size_t l = is.str().length();
+
+        if (l == 0) return "X00";
+
+        if (l < 3 || sat[0] == ' ')  is >> svn;
+        else                          is >> chr >> svn;
+
+        if (chr < 'A')
+        {
+            return sat;
+        }
+
+        if (is.fail()) { return "X00"; }
+        if (chr != 'G') gnss = char2gsys(chr);
+
+        switch (gnss) {
+        case GPS: chr = 'G'; break;
+        case GLO: chr = 'R'; break;
+        case GAL: chr = 'E'; break;
+        case BDS: chr = 'C'; break;
+        case SBS: chr = 'S'; break;
+        case QZS: chr = 'J'; break;
+        case IRN: chr = 'I'; break;
+        case GNS: chr = 'X'; break;
+        case LEO:chr = 'L'; break;
+        default: chr = 'X'; break;
+        }
+
+        ostringstream os;
+        if (svn > 99)
+        {
+            os << setw(1) << chr << setfill('0') << setw(3) << svn;
+        }
+        else {
+
+            os << setw(1) << chr << setfill('0') << setw(2) << svn;
+
+        }
+
+        return os.str();
     }
 
     string t_gsys::eval_sat(const int &svn, const GSYS &sys)
@@ -706,6 +767,9 @@ namespace gnut
             break;
         case IRN:
             chr = 'I';
+            break;
+        case LEO:
+            chr = 'L'; 
             break;
         case GNS:
             chr = 'X';
@@ -811,6 +875,10 @@ namespace gnut
             return S05;
         else if (freq == "I05")
             return I05;
+        else if (freq == "L01")
+            return L01;
+        else if (freq == "L02")
+            return L02;
         else if (freq == "LAST_GFRQ")
             return LAST_GFRQ;
 

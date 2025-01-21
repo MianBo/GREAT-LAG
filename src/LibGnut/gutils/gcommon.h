@@ -67,7 +67,7 @@ namespace gnut
         if (!s.empty() && s[s.length() - 1] == lf)
             s.erase(s.length() - 1);
         if (!s.empty() && s[s.length() - 1] == cr)
-            s.erase(s.length() - 1); // glfeng
+            s.erase(s.length() - 1); 
         return s;
     }
 

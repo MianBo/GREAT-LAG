@@ -74,6 +74,7 @@ namespace gnut
 
     /**@brief ELL coordinates to ipp */
     LibGnut_LIBRARY_EXPORT int ell2ipp(t_gsatdata &satdata, t_gtriple &ell_site, t_gtriple &ell_ipp, bool GPStkflag = false);
+    LibGnut_LIBRARY_EXPORT int ell2ipp(t_gsatdata& satdata, t_gtriple& ell_site, double radius, double ion_hgt, t_gtriple& ell_ipp);
 
     /**@brief rotm */
     LibGnut_LIBRARY_EXPORT Matrix rotm(double angle, int type);

@@ -104,7 +104,7 @@ namespace great
         t_gtriple xyz;
         t_gtriple ell;
 
-        // give crd initial value modified by glfeng
+        // give crd initial value 
         if (param.getCrdParam(rec, xyz) < 0)
         {
             throw runtime_error("Can not find CRD par in t_gallpar !");

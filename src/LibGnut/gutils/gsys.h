@@ -50,6 +50,7 @@ namespace gnut
 #define QZS_FRQ 10230000.0                         ///< QZSS    base frequency
 #define SBS_FRQ 10230000.0                         ///< SBAS    base frequency
 #define IRN_FRQ 10230000.0                         ///< IRNSS   base frequency
+#define LEO_FRQ 10230000.0                         ///< LEO   base frequency
 
 ///< GNSS frequency multiplier factors (dimensionless)
 #define G01_MLT 154.0
@@ -84,6 +85,11 @@ namespace gnut
 #define S05_MLT 115.0
 #define I05_MLT 115.0
 
+//#define  X02_MLT          117.5 //LYZ CHANGE
+//#define  X01_MLT          148.8 //LYZ CHANGE
+
+#define L02_MLT 120.0 //LYZ CHANGE120.0 117.5
+#define L01_MLT 154.0 //LYZ CHANGE154.0 148.8
 ///< GNSS derived frequencies [Hz]
 #define G01_F G01_MLT *GPS_FRQ                    ///<  L1    - GPS NAVSTAR
 #define G02_F G02_MLT *GPS_FRQ                    ///<  L2    - GPS NAVSTAR
@@ -105,10 +111,10 @@ namespace gnut
 #define C02_F C02_MLT *BDS_FRQ ///< B1I BeiDou-2
 #define C06_F C06_MLT *BDS_FRQ ///< B3I BeiDou-2/3
 #define C07_F C07_MLT *BDS_FRQ ///< B2I BeiDou-2
-#define C01_F C01_MLT *BDS_FRQ ///< glfeng B1C BeiDou-3
-#define C08_F C08_MLT *BDS_FRQ ///< glfeng B2  BeiDou-3
-#define C05_F C05_MLT *BDS_FRQ ///< glfeng B2a BeiDou-3
-#define C09_F C09_MLT *BDS_FRQ ///< glfeng B2b BeiDou-3
+#define C01_F C01_MLT *BDS_FRQ ///< B1C BeiDou-3
+#define C08_F C08_MLT *BDS_FRQ ///< B2  BeiDou-3
+#define C05_F C05_MLT *BDS_FRQ ///< B2a BeiDou-3
+#define C09_F C09_MLT *BDS_FRQ ///< B2b BeiDou-3
 
 #define J01_F J01_MLT *QZS_FRQ ///<  L1    - QZSS
 #define J02_F J02_MLT *QZS_FRQ ///<  L2    - QZSS
@@ -119,6 +125,10 @@ namespace gnut
 #define S05_F S05_MLT *SBS_FRQ ///<  L5    - SBAS
 
 #define I05_F I05_MLT *IRN_FRQ ///<  I5    - IRNSS
+//#define  X01_F      X01_MLT * XXX_FRQ                // L0    -XW
+//#define  X02_F      X02_MLT * XXX_FRQ                // FPPP-B2b  -XW
+#define L01_F L01_MLT *LEO_FRQ //  L1    - LEO
+#define L02_F L02_MLT *LEO_FRQ //  L2    - LEO
 
 ///< OBSOLETE INFORMATIONS -- NOT YET !?
 #define GPSLAMB1 CLIGHT / (G01_F)                                                                                                                  ///< GPS L1 wave length [m]
@@ -212,6 +222,9 @@ namespace gnut
 
         /**@brief convert full sat string  */
         static string eval_sat(const int &svn, const GSYS &sys = GPS);         
+
+        /**@brief convert full LEO sat string  */
+        static string eval_sat_addleo(const string sat, const GSYS sys = GPS);
 
         /**@brief get BDS GEO satellite  */
         static bool bds_geo(const string &sat); 

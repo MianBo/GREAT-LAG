@@ -268,6 +268,21 @@ namespace gnut
                 _gattr = ATTR_C;
             }
             break;
+        case gnut::LEO:
+            if (obs2 == L1 || obs2 == L2 || obs2 == C1 || obs2 == C2 || obs2 == D1 || obs2 == D2 || obs2 == S1 || obs2 == S2)
+            {
+                _gattr = ATTR_C;
+            }
+            else if (obs2 == L5 || obs2 == C5 || obs2 == D5 || obs2 == S5)
+            {
+                _gattr = ATTR_Q;
+            }
+            else if (obs2 == P1 || obs2 == P2 || obs2 == P5)
+            {
+                _gtype = TYPE_C;
+                _gattr = ATTR_W;
+            }
+            break;
         case gnut::SBS:
             break;
         case gnut::IRN:

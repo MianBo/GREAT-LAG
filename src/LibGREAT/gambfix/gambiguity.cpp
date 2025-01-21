@@ -55,6 +55,7 @@ namespace great
         _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(_gset)->band_index(gnut::GLO);
         _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(_gset)->band_index(gnut::BDS);
         _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(_gset)->band_index(gnut::QZS);
+        _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(_gset)->band_index(gnut::LEO);
 
         _fix_mode = dynamic_cast<t_gsetamb *>(_gset)->fix_mode();
         _upd_mode = dynamic_cast<t_gsetamb *>(_gset)->upd_mode();
@@ -429,6 +430,9 @@ namespace great
             case QZS:
                 waveLenSats.insert("J");
                 break;
+            case LEO:
+                waveLenSats.insert("L");
+                break;
             default:
                 break;
             }
@@ -438,10 +442,7 @@ namespace great
         // Loop waveLenSats
         for (auto iter : waveLenSats)
         {
-            if (iter == "2" || iter == "3" || iter == "4" || iter == "5") //xjhan
-                gnss->sat("G");
-            else
-                gnss->sat(iter);
+            gnss->sat(iter);
 
             GSYS gsys = gnss->gsys();
             if (iter.substr(0, 1) == "R")
@@ -1119,9 +1120,10 @@ namespace great
                     // apply Widelane UPD
                     if (_upd_mode == UPD_MODE::UPD)
                         itdd->rwl += (-upd_wl1 + upd_wl2);
-                    itdd->rnl = itdd->rlc / _sys_wavelen[sat1.substr(0, 1)]["NL"] - round(itdd->rwl) * _sys_wavelen[sat1.substr(0, 1)]["WL"] / _sys_wavelen[sat1.substr(0, 1)]["L2"];
-                    itdd->srnl = itdd->srlc / _sys_wavelen[sat1.substr(0, 1)]["NL"];
-                    itdd->factor = _sys_wavelen[sat1.substr(0, 1)]["NL"];
+                    string tmp = t_gsys::char2str(sat1[0]);
+                    itdd->rnl = itdd->rlc / _sys_wavelen[t_gsys::str2strfirst(tmp)]["NL"] - round(itdd->rwl) * _sys_wavelen[t_gsys::str2strfirst(tmp)]["WL"] / _sys_wavelen[t_gsys::str2strfirst(tmp)]["L2"];
+                    itdd->srnl = itdd->srlc / _sys_wavelen[t_gsys::str2strfirst(tmp)]["NL"];
+                    itdd->factor = _sys_wavelen[t_gsys::str2strfirst(tmp)]["NL"];
                     if (_upd_mode == UPD_MODE::UPD)
                         itdd->rnl += itdd->sd_rnl_cor;
                 }
@@ -1331,6 +1333,14 @@ namespace great
                     itdd->isNlFixed = true;
                 }
             }
+            cout << "WL " << sat1 << " " << sat2 << " ";
+            cout.setf(ios::fixed);
+            cout.precision(3);
+            cout << " " << itdd->rwl << " " << itdd->srwl << endl;
+            cout << "NL " << sat1 << " " << sat2 << " ";
+            cout.setf(ios::fixed);
+            cout.precision(3);
+            cout << " " << itdd->rnl << " " << itdd->srnl << endl;
             itdd++;
         }
 
@@ -2050,7 +2060,8 @@ namespace great
 
             if (_obstype == OBSCOMBIN::IONO_FREE)
             {
-                string sys = get<0>(itdd->ddSats[0]).substr(0, 1);
+                string tmp = t_gsys::char2str(get<0>(itdd->ddSats[0])[0]);
+                string sys = t_gsys::str2strfirst(tmp);
                 if (sys != "R")
                 {
                     integer = (itdd->inl - itdd->sd_rnl_cor + round(itdd->rwl) * _sys_wavelen[sys]["WL"] / _sys_wavelen[sys]["L2"]) * itdd->factor;

@@ -51,11 +51,13 @@ great::t_gpvtflt::t_gpvtflt(string mark, string mark_base, t_gsetbase *gset, t_g
     _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::GLO);
     _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::BDS);
     _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::QZS);
+    _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::LEO);
     _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GPS);
     _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GAL);
     _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GLO);
     _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::BDS);
     _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::QZS);
+    _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::LEO);
 
     _gobs = dynamic_cast<t_gallobs *>((*_allproc)[t_gdata::ALLOBS]);
     _gnav = dynamic_cast<t_gallprec *>((*_allproc)[t_gdata::GRP_EPHEM]);
@@ -146,11 +148,13 @@ great::t_gpvtflt::t_gpvtflt(string mark, string mark_base, t_gsetbase *gset, t_s
     _band_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::GLO);
     _band_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::BDS);
     _band_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(gset)->band_index(gnut::QZS);
+    _band_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(gset)->band_index(gnut::LEO);
     _freq_index[gnut::GPS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GPS);
     _freq_index[gnut::GAL] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GAL);
     _freq_index[gnut::GLO] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::GLO);
     _freq_index[gnut::BDS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::BDS);
     _freq_index[gnut::QZS] = dynamic_cast<t_gsetgnss *>(gset)->freq_index(gnut::QZS);
+    _freq_index[gnut::LEO] = dynamic_cast<t_gsetgnss*>(gset)->freq_index(gnut::LEO);
     _gobs = dynamic_cast<t_gallobs *>((*_allproc)[t_gdata::ALLOBS]);
     _gnav = dynamic_cast<t_gallprec *>((*_allproc)[t_gdata::GRP_EPHEM]);
     _gupd = dynamic_cast<t_gupd *>((*_allproc)[t_gdata::UPD]);
@@ -199,6 +203,11 @@ great::t_gpvtflt::t_gpvtflt(string mark, string mark_base, t_gsetbase *gset, t_s
     _wl_Upd_time = t_gtime(WL_IDENTIFY);
     _ewl_Upd_time = t_gtime(EWL_IDENTIFY);
     _receiverType = dynamic_cast<t_gsetproc *>(_set)->get_receiverType();
+
+    string par_path = dynamic_cast<t_gsetout*>(_set)->outputs("flt") + "par";
+    par_path = par_path.substr(7);
+    substitute(par_path, "$(rec)", _site, false);
+    all_par_file.open(par_path);
 }
 
 great::t_gpvtflt::~t_gpvtflt()
@@ -214,6 +223,7 @@ great::t_gpvtflt::~t_gpvtflt()
         delete _gModel_base;
         _gModel_base = nullptr;
     }
+    all_par_file.close();
 }
 
 int great::t_gpvtflt::_addObsD(t_gsatdata &satdata, unsigned int &iobs, t_gallpar &param, t_gtriple &XYZ, Matrix &A, ColumnVector &l, DiagonalMatrix &P)
@@ -311,6 +321,9 @@ int great::t_gpvtflt::_addObsD(t_gsatdata &satdata, unsigned int &iobs, t_gallpa
         break;
     case QZS:
         sigDoppler = _sigDopplerQZS;
+        break;
+    case LEO:
+        sigDoppler = _sigDopplerLEO;
         break;
     default:
         sigDoppler = 0.0;
@@ -940,7 +953,7 @@ int great::t_gpvtflt::_preprocess(const string &ssite, vector<t_gsatdata> &sdata
             iter = sdata.erase(iter);
             continue;
         }
-        
+
         //except sat without pcv
         if (!_isBase)
         {
@@ -1475,6 +1488,7 @@ int great::t_gpvtflt::_processEpoch(const t_gtime &runEpoch)
             }
         }
         _posterioriTest(A, P, l, dx, _Qx, v_norm, vtpv);
+
         nobs_total = A.Nrows();
         npar_number = A.ncols();
         _realnobs = l.size();
@@ -1521,8 +1535,10 @@ int great::t_gpvtflt::_processEpoch(const t_gtime &runEpoch)
 	_amb_resolution();
 	if (_amb_state) _postRes(A, P, l,dx);
 
+    all_par_file << _epoch.mjd() << "  " << _epoch.sod() << endl;
     for (unsigned int iPar = 0; iPar < _param.parNumber(); iPar++)
     {
+        all_par_file << std::fixed << std::setprecision(5) << _param[iPar].str_type() << "  " << _param[iPar].value() << "  " << dx(_param[iPar].index) << endl;
         _param[iPar].value(_param[iPar].value() + dx(_param[iPar].index));
     }
 
@@ -1898,7 +1914,21 @@ int great::t_gpvtflt::processBatch(const t_gtime &beg_r, const t_gtime &end_r, b
             now.add_dsec(sign * _sampling); //  >1Hz data
 
     }
-
+    t_gallprec clk_result;
+    for (auto iter = _estimated_clk[_site].begin(); iter != _estimated_clk[_site].end(); iter++)
+    {
+        double clk[3] = { iter->second / CLIGHT, 0.0, 0.0 };
+        double var[3] = { 0.0, 0.0, 0.0 };
+        clk_result.addclk(_site, iter->first, clk, var);
+    }
+    string clk_path = dynamic_cast<t_gsetout*>(_set)->outputs("flt") + "clk";
+    substitute(clk_path, "$(rec)", _site, false);
+    t_rinexc clk_coder(_set);
+    clk_coder.add_data("ID1", &clk_result);
+    t_gfile gout_clk(_spdlog);
+    gout_clk.path(clk_path);
+    gout_clk.coder(&clk_coder);
+    gout_clk.run_write();
     _running = false;
 
     if (beg_r != end_r)
@@ -2980,6 +3010,12 @@ void great::t_gpvtflt::_prt_port(t_gtime &epoch, t_gallpar &X, const SymmetricMa
     int icrdx = _param.getParam(_site, par_type::CRD_X, "");
     int icrdy = _param.getParam(_site, par_type::CRD_Y, "");
     int icrdz = _param.getParam(_site, par_type::CRD_Z, "");
+    int iclk = _param.getParam(_site, par_type::CLK, "");
+    if (iclk > 0)
+    {
+        _estimated_clk[_site][epoch] = _param[iclk].value();
+    }
+    
     if (icrdx >= 0 && icrdy >= 0 && icrdz >= 0)
     {
         if (Q(icrdx + 1, icrdx + 1) < 0)
@@ -3162,6 +3198,24 @@ void great::t_gpvtflt::_generateObsIndex(t_gfltEquationMatrix &equ)
             break;
         case 'J':
             sys = GSYS::QZS;
+            break;
+        case 'L':
+            sys = GSYS::LEO;
+            break;
+        case '2':
+            sys = GSYS::LEO;
+            break;
+        case '3':
+            sys = GSYS::LEO;
+            break;
+        case '4':
+            sys = GSYS::LEO;
+            break;
+        case '5':
+            sys = GSYS::LEO;
+            break;
+        case '6':
+            sys = GSYS::LEO;
             break;
         default:
             sys_valid = false;
@@ -3658,6 +3712,21 @@ void great::t_gpvtflt::_predictBias()
         {
             if (_cntrep == 1)
                 _Qx(i + 1, i + 1) += _qzsStoModel->getQ();
+        }
+    }
+
+    i = _param.getParam(_site, par_type::LEO_ISB, "");
+    if (i >= 0)
+    {
+        if (!_initialized || _Qx(i + 1, i + 1) == 0.0)
+        {
+            _param[i].value(0.0);
+            _Qx(i + 1, i + 1) = _sig_init_leo * _sig_init_leo;
+        }
+        else
+        {
+            if (_cntrep == 1)
+                _Qx(i + 1, i + 1) += _leoStoModel->getQ();
         }
     }
 

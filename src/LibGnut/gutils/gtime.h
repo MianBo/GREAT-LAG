@@ -306,7 +306,7 @@ namespace gnut
                           const bool &ts = true,
                           const bool &conv = true) const; ///< get mjd-sod
 
-        string str_yyyydoy(const bool &conv = true) const; ///< get yyyydoy add by glfeng
+        string str_yyyydoy(const bool &conv = true) const; ///< get yyyydoy 
         string str_yyyy(const bool &conv = true) const;    ///< get year-string
         string str_doy(const bool &conv = true) const;     ///< get doy-string
         string str_gwkd(const bool &conv = true) const;    ///< get gpsweek and day -string

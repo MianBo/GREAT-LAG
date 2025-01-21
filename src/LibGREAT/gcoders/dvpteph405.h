@@ -13,6 +13,7 @@
 
 #include "gcoders/gcoder.h"
 #include "gset/gsetbase.h"
+#include "gexport/ExportLibGREAT.h"
 
 namespace great
 {
