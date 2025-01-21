@@ -24,6 +24,11 @@
 #include "gdata/gifcb.h"
 #include "gall/gallopl.h"
 #include "gutils/gscf2crsleo.h"
+#include "gall/gallattitude.h"
+#include "gdata/gattitude.h"
+
+#include "gall/galltrp.h"
+#include "gdata/gion.h"
 
 namespace great
 {
@@ -256,12 +261,12 @@ namespace great
         shared_ptr<t_gtide> _tide;  ///< tide correction model
 
         t_gpoleut1 *_gdata_erp = nullptr; ///< all poleut1 data
-        //t_gion* _gdata_ion = nullptr;      ///< all ion data for simu
-        //t_galltrp* _gall_trp = nullptr;     ///< all trp data for simu
+        t_gion* _gdata_ion = nullptr;      ///< all ion data for simu
+        t_galltrp* _gall_trp = nullptr;     ///< all trp data for simu
         t_gnavde *_gdata_navde = nullptr; ///< all panetnav info
         t_gallnav *_gall_nav = nullptr;   ///< all nav data include rinexn,sp3,clk
         t_gallobj *_gallobj = nullptr;    ///< all obj
-        //t_gallatt* _gall_att = nullptr;	      ///< all attitude data for leo sat
+        t_gallatt* _gall_att = nullptr;	      ///< all attitude data for leo sat
         t_gallopl *_opl = nullptr;        ///< opl
         modeofmeanpole _mean_pole_model = modeofmeanpole::cubic;
 
