@@ -1,3 +1,5 @@
 /src/build
 /src/build_Windows
 /plot/.idea
+/plot/PythonScripts/__pycache__
+/plot/PythonScripts/dependency/__pycache__/*.pyc
