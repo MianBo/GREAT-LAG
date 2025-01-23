@@ -1333,14 +1333,7 @@ namespace great
                     itdd->isNlFixed = true;
                 }
             }
-            cout << "WL " << sat1 << " " << sat2 << " ";
-            cout.setf(ios::fixed);
-            cout.precision(3);
-            cout << " " << itdd->rwl << " " << itdd->srwl << endl;
-            cout << "NL " << sat1 << " " << sat2 << " ";
-            cout.setf(ios::fixed);
-            cout.precision(3);
-            cout << " " << itdd->rnl << " " << itdd->srnl << endl;
+
             itdd++;
         }
 

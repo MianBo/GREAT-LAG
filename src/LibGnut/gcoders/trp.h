@@ -54,12 +54,12 @@ namespace gnut {
         virtual  int decode_data(char* buff, int bufLen, int& cnt, vector<string>& errmsg);
    
     protected:
-        t_gtime _beg;     
-        t_gtime _end;     
+        t_gtime _beg;   ///< begin time    
+        t_gtime _end;   ///< end time   
 
         string _ac;
-        double _version; // 1.00 or 0.01
-        string _site;
+        double _version; ///< version of file
+        string _site;    ///< site
         int _tab_data;
 
         t_gtrp *_gtrp;	 ///< storage TRP data for one epoch

@@ -1,17 +1,13 @@
 /**
-*
-* @verbatim
-	 (c) 2018 G-Nut Software s.r.o. (software@gnutsoftware.com)
-
-  @endverbatim
-*
-* @file		gsetsimu.h
-* @brief	implements simugns setting class
-* @author   xjhan
-* @version	1.0.0
-* @date		2021-07-10
-*
-*/
+ * @file         gsetsimu.h
+ * @author       GREAT-WHU (https://github.com/GREAT-WHU)
+ * @brief        control set from XML
+ * @version      1.0
+ * @date         2025-01-12
+ *
+ * @copyright Copyright (c) 2024, Wuhan University. All rights reserved.
+ *
+ */
 
 #ifndef GSETSIMU_H
 #define GSETSIMU_H

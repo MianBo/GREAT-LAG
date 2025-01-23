@@ -318,7 +318,7 @@ namespace great
 				t_gtime beg_clk = _gall_prec->beg_clk(site);
 				if (beg_clk == LAST_TIME)
 				{
-					cout << site << " rec clk is not found in rinexc file" << endl;
+					cout << "WARNING: simugns: " << site << " rec clk is not found in rinexc file" << endl;
 					for (t_gtime it_time = beg_time; it_time <= end_time; it_time = it_time + _intv)
 					{
 						parinfo[type][it_time] = 0.0;
@@ -336,7 +336,7 @@ namespace great
 					}
 					else 
 					{
-						cout << it_time.mjd() << "  " << it_time.sod() << "  rec clk is not found in rinexc file" << endl;
+						cout << "WARNING: simugns: " << it_time.mjd() << "  " << it_time.sod() << "  rec clk is not found in rinexc file" << endl;
 					}
 				}
 			}
@@ -436,6 +436,7 @@ namespace great
 			if (_ion)
 			{
 				t_giono_tecgrid iono_tec;
+				iono_tec._band_index = _band_index;
 				iono_tec.getIonoDelay(dynamic_cast<t_gionex*>((*_data)[t_gdata::IONEX]), tmp_obs, epoch, crd, ion_L1, ion_rms);
 			}
 			_all_simupars[epoch]["ION_L1"] = ion_L1;
@@ -446,7 +447,7 @@ namespace great
 			double upd_band2 = 0.0;
 			if (_sat_amb_map.find(sat) == _sat_amb_map.end())
 			{
-				cout << sat << "is not found in _sat_list" << endl;
+				SPDLOG_LOGGER_INFO(_log, "simugns", "ERROR : get amb failed " + sat);
 			}
 			else
 			{
@@ -464,7 +465,7 @@ namespace great
 			}
 			if (_upd && !_get_upd_value(epoch, upd_band1, upd_band2, obsdata))
 			{
-				cout << "simugns: get upd fail for " + sat + " at" + epoch.str_hms() << endl;
+				SPDLOG_LOGGER_INFO(_log, "simugns", "WARNING : get upd failed " + sat);
 			}
 			// obs type loop
 			for (auto obs : obs_list)
@@ -482,7 +483,6 @@ namespace great
 
 				// simulate ion correct
 				double gamma = SQR(obsdata.wavelength(this_obs.band())) / SQR(CLIGHT / obsdata.frequency(_band_index[gsys][FREQ_1]));
-				cout << "freq: " << obsdata.sat() << "  " << obsdata.frequency(_band_index[gsys][FREQ_1]) << "  " << obsdata.frequency(t_gsys::band_priority(obsdata.gsys(), FREQ_1)) << endl;
 				double ion = gamma * ion_L1;
 
 				double obs_value_simu = 0.0;
@@ -490,12 +490,13 @@ namespace great
 				if (this_obs.is_code())
 				{
 					// set pseudorange noise
-					noiseP += noise_bias[sat]; 
-					noiseP += ion;
-					obs_value_simu = (FAKE_OBS_VALUE - omc + noiseP);
-					if (_freq_index[gsys][this_obs.band()] == FREQ_1) _all_simupars[epoch]["noise_P1"] = noiseP;
-					if (_freq_index[gsys][this_obs.band()] == FREQ_2) _all_simupars[epoch]["noise_P2"] = noiseP;
-					if (_freq_index[gsys][this_obs.band()] == FREQ_3) _all_simupars[epoch]["noise_P3"] = noiseP;						
+					double noise = 0.0;
+					noise = noiseP;
+					noise += ion;
+					obs_value_simu = (FAKE_OBS_VALUE - omc + noise);
+					if (_freq_index[gsys][this_obs.band()] == FREQ_1) _all_simupars[epoch]["noise_P1"] = noise;
+					if (_freq_index[gsys][this_obs.band()] == FREQ_2) _all_simupars[epoch]["noise_P2"] = noise;
+					if (_freq_index[gsys][this_obs.band()] == FREQ_3) _all_simupars[epoch]["noise_P3"] = noise;						
 				}
 				else if (this_obs.is_phase())
 				{

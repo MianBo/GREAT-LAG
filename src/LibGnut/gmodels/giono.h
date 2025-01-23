@@ -110,6 +110,8 @@ namespace gnut
 		* @return	             
 		**/
 		bool getIonoDelay(t_gionex* ionexdata, t_gsatdata& satdata, const t_gtime& epo, t_gtriple& site_pos, double& value, double& rms);
+
+		map< GSYS, map<FREQ_SEQ, GOBSBAND> > _band_index;		///< band index
 	};
 	
 	

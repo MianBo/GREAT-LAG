@@ -95,6 +95,7 @@
         <sig_init_gal>           10                 </sig_init_gal>                 <!--> initial sigma of Galileo isb/ifb <!-->
         <sig_init_glo>           10                 </sig_init_glo>                 <!--> initial sigma of GLONASS isb/ifb <!-->
         <sig_init_bds>           10                 </sig_init_bds>                 <!--> initial sigma of BDS isb/ifb <!-->
+		<sig_init_leo>           10                 </sig_init_leo>                 <!--> initial sigma of LEO isb/ifb <!-->
         <sig_init_vion>          100                </sig_init_vion>                <!--> initial sigma of slant iono <!-->
         <minimum_elev>           7                  </minimum_elev>                 <!--> cut-off satellite elevation(deg) <!-->
         <obs_combination>        RAW_ALL            </obs_combination>              <!--> obs comb type (IONO_FREE/RAW_ALL) <!-->
@@ -121,7 +122,8 @@
         rndwk_glo    random walk of GLONASS isb/ifb 
         rndwk_gal    random walk of Galileo isb/ifb 
         rndwk_bds    random walk of BDS isb/ifb 
-        rndwk_gps    random walk of BDS ifb 
+        rndwk_gps    random walk of GPS ifb
+		rndwk_leo    random walk of LEO isb		
     /-->
     <filter
         method_flt="srcf"  
@@ -135,7 +137,8 @@
         rndwk_glo = "20"  
 		rndwk_gal = "20"  
 		rndwk_bds = "20"  
-		rndwk_gps = "20"  
+		rndwk_gps = "20"
+		rndwk_leo = "20"
     />
 
 

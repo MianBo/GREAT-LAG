@@ -59,7 +59,7 @@ namespace gnut
 	};
 
 	/**
-	*@brief	 Class for storaging ion file data
+	*@brief	 Class for storaging ion record data
 	*/
 	class LibGnut_LIBRARY_EXPORT t_gion : public t_gdata
 	{
@@ -71,10 +71,57 @@ namespace gnut
 		/** @brief default destructor. */
 		virtual ~t_gion();
 
+		/**
+		 * @brief set_header
+		 *
+		 * @param beg
+		 * @param end
+		 * @param intv
+		 * @param num_amb
+		 * @param sats
+		 * @param recs
+		 * @return 
+		 */
 		void    set_header(const t_gtime& beg, const t_gtime& end, const double& intv, const int& num_amb, const set<string>& sats, const set<string>& recs);
+
+		/**
+		 * @brief get_header
+		 *
+		 * @param beg
+		 * @param end
+		 * @param intv
+		 * @param sats
+		 * @param recs
+		 * @return
+		 */
 		void    get_header(t_gtime& beg,t_gtime& end, double& intv, set<string>& sats, set<string>& recs);
+
+		/**
+		 * @brief get_value
+		 *
+		 * @param beg
+		 * @param end
+		 * @param sats
+		 * @param recs
+		 * @return gion_record value
+		 */
 		double  get_value(const string& rec, const string& sat, const t_gtime& beg, const t_gtime& end);
+
+		/**
+		 * @brief add_record
+		 *
+		 * @param record
+		 * @return 
+		 */
 		void   add_record(const t_gion_record& record);
+
+		/**
+		 * @brief get_records
+		 *
+		 * @param rec
+		 * @param sat
+		 * @return _ions
+		 */
 		map<t_gtime, t_gion_record>& get_records(string rec, string sat);
 	protected:
 		map< pair<string, string>, map<t_gtime, t_gion_record> > _ions; // rec_sat_beg

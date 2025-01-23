@@ -69,7 +69,6 @@ namespace gnut
                      public t_gsetflt,
                      public t_gsetrec,
                      public t_gsetamb
-                     //public t_gsetturboedit
   {
 
   public:

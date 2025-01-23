@@ -83,12 +83,12 @@ namespace gnut
 		virtual  int encode_data(char* buff, int sz, int& cnt, vector<string>& errmsg)override;
 
 	protected:
-		t_gtime		_beg;
-		t_gtime     _end;
-		double		_intv;
-		int			_numb;
-		set<string> _sats;
-		set<string> _recs;
+		t_gtime		_beg;	///< begin
+		t_gtime     _end;	///< end
+		double		_intv;	///< inteval
+		int			_numb;	
+		set<string> _sats;	///< all sats 
+		set<string> _recs;	///< all receiver
 	private:
 	};
 

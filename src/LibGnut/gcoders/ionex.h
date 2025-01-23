@@ -63,11 +63,11 @@ namespace gnut
 		virtual  int decode_data(char* buff, int sz, int& cnt, vector<string>& errmsg)override;
 
 	protected:
-		t_gionex_head    _ionex_hd;
-		string           _data_type;
-		t_gtime          _crt_time;
-		int              _ihgt, _ilat;
-		int              _ilon, _nlon;
+		t_gionex_head    _ionex_hd;		///< ionex map data
+		string           _data_type;	///< label of data block
+		t_gtime          _crt_time;		///< current time
+		int              _ihgt, _ilat;	
+		int              _ilon, _nlon;	
 	private:
 	};
 

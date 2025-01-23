@@ -88,8 +88,7 @@ bool t_giono_tecgrid::getIonoDelay(t_gionex* ionexdata, t_gsatdata& satdata, con
 	if (!ionexdata->getSTEC(epo, satdata, site_ell, value, rms)) return false;
 
 	/*Slant ionospheric delay(L1) (m)*/	
-	double f1 = satdata.frequency(t_gsys::band_priority(satdata.gsys(), FREQ_1));
-	cout << f1 << endl;
+	double f1 = satdata.frequency(_band_index[satdata.gsys()][FREQ_1]);
 	double fact = 40.30 * 1e16 / f1 / f1;
 	value *= fact;
 	rms *= SQR(fact);

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<config>
+	<gen>
+		<beg> 2021-04-10 00:00:00 </beg>    <!--> begin time <!-->
+		<end> 2021-04-10 23:59:30 </end>    <!--> end time <!-->
+		<int> 60                  </int>    <!--> sampling interval <!-->
+		<sys> GPS LEO             </sys>    <!--> system ex：GPS GAL GLO QZS BDS SBS <!-->
+		<rec> ABMF CUSV           </rec>    <!--> site (4-char upper) <!-->
+		<est> LSQ                 </est>    <!--> Estimator ：FLT <!-->
+		<sat_rm> </sat_rm>
+	</gen>
+	
+	<inputs>
+		<rinexo>                                                                      <!--> rinex obs file <!-->
+			.\rinexo\abmf1000.21o
+			.\rinexo\cusv1000.21o
+		</rinexo>
+		<rinexn>         .\gnss\brdm1000.21p                   </rinexn>              <!--> rinex nav file <!-->
+		<rinexc_simu>                                                                 <!--> precise satellite clock offset file for simu<!--> 
+			.\gnss\clk_2021100 
+			.\gnss\cod21526.clk    
+		</rinexc_simu>         
+		<sp3_simu>                                                                    <!--> precise orbit file for simu <!--> 
+			.\gnss\xwsp3_del_x100 
+			.\gnss\cod21526.sp3
+		</sp3_simu>
+		<DE>             .\model\jpleph_de405_great            </DE>                  <!--> Planetary ephemeris file <!-->
+		<poleut1>        .\model\poleut1_2015_2023.2023        </poleut1>             <!--> ERP file <!--> 
+		<atx>            .\model\igs_absolute_14.atx           </atx>                 <!--> Antenna correction file <!--> 
+		<bias>                                                                        <!--> DCB file <!--> 
+			.\DCB\WUM0MGXRAP_20210990000_01D_01D_OSB.BIA
+			.\DCB\WUM0MGXRAP_20211000000_01D_01D_OSB.BIA
+			.\DCB\WUM0MGXRAP_20211010000_01D_01D_OSB.BIA
+		</bias>
+		<blq>            .\model\oceanload_SLR                 </blq>                <!--> oceanload file <!-->
+		<ionex>          .\ionex\whrg1000.21i                  </ionex>              <!--> Ionospheric products, for simu ionospheric delay <!-->
+		<trpztd>                                                                     <!--> Tropospheric products, for simu tropospheric delay <!-->          
+			.\TRP\abmf1000.21zpd
+			.\TRP\cusv1000.21zpd
+		</trpztd>
+		<upd>                                                                        <!--> uncalibrated phase delay, for fixing ambiguity <!-->   
+			.\upd\upd_wl_2023305_GEC 
+			.\upd\upd_nl_2023305_GEC  
+		</upd>
+	</inputs>
+ 
+	<outputs>
+		<flt>.\flt\$(rec)_2021100_.flt</flt>                                         <!--> result file <!-->
+		<recover>.\res\$(rec)_2021100_LEO.res</recover>
+		<rinexo>.\obs_sim_100\$(rec)1000.21o</rinexo>
+		<log> .\log\simu.log</log>                                                   <!--> log file <!-->
+	</outputs>
+	
+	<leo maxC_simu="1" maxL_simu="0.01" sigC_simu="0.1" sigL_simu="0.005">           <!--> LEO pseudorange simu sigma & phase simu sigma<!-->
+		<sat>                                                                        <!--> satellite prn <!-->
+			261  262  263  264  265  266  267  268  269  270
+			271  272  273  274  275  276  277  278  279  280
+			281  282  283  284  285  286  287  288  289  290
+			291  292  293  294  295  296  297  298  299  300
+			301  302  303  304  305  306  307  308  309  310
+			311  312  313  314  315  316  317  318  319  320
+			321  322  323  324  325  326  327  328  329  330
+			331  332  333  334  335  336  337  338  339  340
+			341  342  343  344  345  346  347  348  349  350
+			351  352  353  354  355  356  357  358  359  360
+			361  362  363  364  365  366  367  368  369  370
+			371  372  373  374  375  376  377  378  379  380 
+		</sat>
+		<band> 1 2</band>
+		<freq> 1 2</freq>
+	</leo>
+ 
+	<gps sigma_C="0.6" sigma_L="0.01" maxC_simu="1" maxL_simu="0.01" sigC_simu="0.1" sigL_simu="0.005">
+		<sat>
+			G01  G02  G03  G05  G06  G07  G08  G09  G10  G11  
+			G12  G13  G14  G15  G16  G17  G18  G19  G20  G21  
+			G22  G23  G24  G25  G26  G27  G28  G29  G30  G31  
+			G32  
+		</sat>
+		<band> 1 2</band>
+		<freq> 1 2</freq>
+	</gps>
+	<gal sigma_C="0.6" sigma_L="0.01" maxC_simu="1" maxL_simu="0.01" sigC_simu="0.1" sigL_simu="0.005">
+		<sat>
+			E01  E02  E03  E04  E05  E06  E07  E08  E09  E10  E11  E12  E13
+			E15  E16  E17  E20  E22  E23  E24  E25  E26  E28  
+			E29  E30  E31  E32  E33  E34  E35  E36
+		</sat>
+		<band> 1 5 </band>
+		<freq> 1 2 </freq>
+		</gal>
+	<bds sigma_C="0.6" sigma_L="0.01" maxC_simu="1" maxL_simu="0.01" sigC_simu="0.1" sigL_simu="0.005">
+		<sat>
+			C07 C08 C09 C10 C13 C16 C31
+			C11 C12 C19 C20 C21 C22 C23 C24 C25 C26 C27 C28
+			C29 C30 C31 C32 C33 C34 C35 C36 C37 
+			C38 C40 C41 C42 C43 C44 C45 C46
+			C06 C39
+			C14
+	</sat>
+	<freq> 1 2 </freq>
+	<band> 1 5 </band>
+	</bds>
+ 
+	<simu>
+		<clk> YES </clk>                                                             <!--> whether to use sat clk product (must) for simu<!-->                  
+		<ion> NO </ion>                                                              <!--> whether to use ion product for simu <!-->
+		<ztd> NO </ztd>                                                              <!--> whether to use ztd product for simu <!-->
+		<upd> NO </upd>                                                              <!--> whether to use upd product for simu <!-->
+	</simu>
+ 
+	<receiver>                                                                       <!--> simulated receiver stations and their XYZ coordinates <!--> 
+		<rec id="ABMF" X="  2919785.796931" Y=" -5383744.946054" Z="  1774604.877625" dX="        0.000298" dY="        0.000485" dZ="        0.000216" obj="SNX" />
+		<rec id="CUSV" X=" -1132915.015920" Y="  6092528.529211" Z="  1504633.157510" dX="        0.000210" dY="        0.000598" dZ="        0.000208" obj="SNX" />
+		<rec id="BJFS" X=" -2148744.596729" Y="  4426641.151921" Z="  4044655.792754" dX="        0.000298" dY="        0.000485" dZ="        0.000216" obj="SNX" />
+		<rec id="CORD" X="  2345503.855712" Y=" -4910842.928520" Z=" -3316365.209930" dX="        0.000210" dY="        0.000598" dZ="        0.000208" obj="SNX" />
+		<rec id="GODE" X="  1130773.498598" Y=" -4831253.570918" Z="  3994200.462671" dX="        0.000298" dY="        0.000485" dZ="        0.000216" obj="SNX" />
+		<rec id="TIDB" X=" -4460997.007424" Y="  2682557.084953" Z=" -3674442.578019" dX="        0.000210" dY="        0.000598" dZ="        0.000208" obj="SNX" />
+	</receiver>
+ 
+	<parameters>
+		<STA ID="ABMF" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+		<STA ID="CUSV" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+		<STA ID="BJFS" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+		<STA ID="CORD" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+		<STA ID="GODE" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+		<STA ID="TIDB" sigCLK="0.01" sigPOS="0.001_0.001_0.001" sigSION="0.01" sigTropPd="0.015" sigZTD="0.201" />
+	</parameters>
+ 
+	<process>
+		<frequency>               2                 </frequency>                     <!--> frequency number <!-->
+		<minimum_elev>            7                 </minimum_elev>                  <!--> cut-off satellite elevation(deg) <!-->
+		<grad_mf>                 TILTING           </grad_mf>
+		<ion_model>               SION              </ion_model>
+		<obs_combination>         IONO_FREE         </obs_combination>               <!--> obs comb type (IONO_FREE/RAW_ALL) <!-->
+		<gradient>                false             </gradient>
+		<tropo>                   true              </tropo>                         <!--> estimate trop param (true/false) <!-->
+		<tropo_mf>                gmf               </tropo_mf>                      <!--> tropospheric wet delay mapping function <!-->
+		<tropo_model>             saastamoinen      </tropo_model>                   <!--> trop model <!-->                  
+		<obs_weight>              PARTELE           </obs_weight>                    <!--> weigh model of obs <!-->
+	</process>
+	
+</config>

@@ -1,18 +1,13 @@
 /**
-*
-* @verbatim
-	History
-	 -1.0 xjhan		2021-05-16  creat
-  @endverbatim
-* Copyright (c) 2018, Wuhan University. All rights reserved.
-*
-* @file		    gsimugns.h
-* @brief		obs simu processing for GNSS satellite
-* @author       xjhan, Wuhan University
-* @version		1.0.0
-* @date		    2021-05-16
-*
-*/
+ * @file         gsimugns.h
+ * @author       GREAT-WHU (https://github.com/GREAT-WHU)
+ * @brief        simulate gnss observation
+ * @version      1.0
+ * @date         2025-01-12
+ *
+ * @copyright Copyright (c) 2024, Wuhan University. All rights reserved.
+ *
+ */
 #ifndef GSIMUGNS_H
 #define GSIMUGNS_H
 
@@ -58,10 +53,10 @@ namespace great
 		/** @brief integer ambiguity value in band 1 */
 		int value_L1;
 
-		/** @brief integer ambiguity value in band 1 */
+		/** @brief integer ambiguity value in band 2 */
 		int value_L2;
 
-		/** @brief integer ambiguity value in band 1 */
+		/** @brief integer ambiguity value in band 3 */
 		int value_L3;
 	};
 

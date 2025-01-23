@@ -44,12 +44,12 @@ namespace gnut
 		/** @brief default destructor. */
 		virtual ~t_trp_record();
 
-		double TROTOT;  ///< 
-		double STDDEV_TRO;  ///< 
-		double TGNTOT;  ///< 
-		double STDDEV_TGN;  ///< 
-		double TGETOT;  ///< 
-		double STDDEV_TGE;  ///< 
+		double TROTOT;  
+		double STDDEV_TRO;  
+		double TGNTOT;  
+		double STDDEV_TGN;  
+		double TGETOT;  
+		double STDDEV_TGE;  
 	};
 
 	/**

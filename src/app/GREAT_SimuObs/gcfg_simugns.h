@@ -67,10 +67,16 @@ namespace gnut
 		public t_gsetflt
 	{
 	public:
+		/** @brief default constructor. */
 		t_gcfg_simugns();
+
+		/** @brief default destructor. */
 	    ~t_gcfg_simugns();
 
+		/** @brief settings check. */
 		void check();
+
+		/** @brief settings help. */
 		void help();
 
 	protected:
