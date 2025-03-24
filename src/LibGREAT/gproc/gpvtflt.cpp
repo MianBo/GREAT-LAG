@@ -3892,8 +3892,9 @@ void great::t_gpvtflt::_predictIono(const double& bl, const t_gtime& runEpoch)
                     _Qx(i + 1, i + 1) = var;
                     _param[i].value(1e-6);
                 }
-                _param[i].value(0.0);
-                _Qx(i + 1, i + 1) = var;
+                //ylx20250319
+                /*_param[i].value(0.0);
+                _Qx(i + 1, i + 1) = var;*/
                 if (_cntrep == 1 && !double_eq(_Qx(i + 1, i + 1), var))
                 {
 
