@@ -280,7 +280,7 @@ namespace gnut
                 string prn;
                 if (_leo.size() == 0 && _num_leo == 0)
                 {
-                    prn = t_gsys::eval_sat(string(sat));
+                    prn = t_gsys::eval_sat_addleo(string(sat));
                 }
                 else
                 {
